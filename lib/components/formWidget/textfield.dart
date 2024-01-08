@@ -1,3 +1,4 @@
+import 'package:chitter/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 class TextInputField extends StatefulWidget {
@@ -62,24 +63,19 @@ class _TextInputFieldState extends State<TextInputField>
       autocorrect: false,
       decoration: InputDecoration(
         hintText: widget.hintText,
-        hintStyle: const TextStyle(color: Colors.black),
+        hintStyle: const TextStyle(color: Colors.grey),
         prefixIcon: widget.prefixIcon,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(40),
-          borderSide: const BorderSide(width: 0, style: BorderStyle.none),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(style: BorderStyle.none, width: 0),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(40),
-          borderSide: BorderSide.lerp(
-            const BorderSide(color: Colors.transparent),
-            const BorderSide(color: Colors.amberAccent, width: 2),
-            _animation.value,
-          ),
-        ),
-        filled: true,
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.amberAccent, width: 2)),
         isDense: true,
         contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        fillColor: Colors.grey[300],
+        filled: true,
+        fillColor: Colors.grey[100]
       ),
       validator: widget.validator,
       onTap: () => _animationController.forward(),

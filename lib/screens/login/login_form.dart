@@ -1,4 +1,6 @@
+import 'package:chitter/app_router.dart';
 import 'package:chitter/components/formWidget/rounded_button.dart';
+import 'package:chitter/screens/register/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -66,7 +68,7 @@ class LoginForm extends StatelessWidget {
                           color: Colors.amber,
                         ),
                       ),
-                      onTap: () => {},
+                      onTap: () => {Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()))},
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,
