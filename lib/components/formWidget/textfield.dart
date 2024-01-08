@@ -58,25 +58,30 @@ class _TextInputFieldState extends State<TextInputField>
       focusNode: _focusNode,
       controller: widget.controller,
       keyboardType: widget.keyboardType,
+      autovalidateMode: AutovalidateMode.disabled,
       autofocus: false,
       enableSuggestions: false,
       autocorrect: false,
       decoration: InputDecoration(
-        hintText: widget.hintText,
-        hintStyle: const TextStyle(color: Colors.grey),
-        prefixIcon: widget.prefixIcon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(style: BorderStyle.none, width: 0),
-        ),
-        focusedBorder: OutlineInputBorder(
+          errorText: widget.validator(widget.controller.value.toString()),
+          hintText: widget.hintText,
+          hintStyle: const TextStyle(color: Colors.grey),
+          prefixIcon: widget.prefixIcon,
+          border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.amberAccent, width: 2)),
-        isDense: true,
-        contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        filled: true,
-        fillColor: Colors.grey[100]
-      ),
+            borderSide: const BorderSide(style: BorderStyle.none, width: 0),
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.amberAccent, width: 2)),
+          isDense: true,
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.red, width: 2),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          filled: true,
+          fillColor: Colors.grey[100]),
       validator: widget.validator,
       onTap: () => _animationController.forward(),
     );

@@ -2,59 +2,55 @@ import 'package:chitter/screens/login/login_form.dart';
 import 'package:chitter/themes/colors.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+// ... your other imports
+
+class LoginScreen extends StatefulWidget {
+  // ... your widget code
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  _LoginScreen createState() => _LoginScreen();
 }
 
-class _LoginPageState extends State<LoginPage> {
-
-
+class _LoginScreen extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          SingleChildScrollView(
+          // วาง Container ด้านบน
+          Positioned(
+            top: 0,
+            left: 200,
+            right: 0,
+            child: Container(
+              height: 200,
+              decoration: const ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(0),
+                    bottomLeft: Radius.circular(300),
+                    bottomRight: Radius.circular(0),
+                  ),
+                ),
+                gradient: LinearGradient(
+                  colors: [Colors.amber, primaryDark],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+          ),
+          Center(
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: 175,
-                      height: 175,
-                      decoration: const ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(0),
-                              topRight: Radius.circular(0),
-                              bottomLeft: Radius.circular(300),
-                              bottomRight: Radius.circular(0),
-                            ),
-                          ),
-                          gradient: LinearGradient(
-                              colors: [Colors.amber, primaryDark],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter)),
-                      alignment: Alignment.topRight,
-                      padding: const EdgeInsets.only(
-                          top: 0, right: 0, bottom: 0, left: 0),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 80,
-                ),
+                const SizedBox(height: 150),
                 Container(
-                  alignment: Alignment.topLeft,
-                  margin: const EdgeInsets.only(left: 20),
+                  alignment: Alignment.centerLeft,
+                  margin: const EdgeInsets.all(20),
                   child: const Column(
                     children: [
                       Text(
-                        "Login",
+                        "Sign In",
                         style: TextStyle(
                             fontSize: 30, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.start,
@@ -67,39 +63,37 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(
+                  height: 20,
+                ),
                 Container(
                   alignment: Alignment.center,
                   margin: const EdgeInsets.all(20),
                   child: LoginForm(),
                 ),
-                const SizedBox(height: 50),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 230,
-                      height: 230,
-                      decoration: const ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(0),
-                              topRight: Radius.circular(300),
-                              bottomLeft: Radius.circular(0),
-                              bottomRight: Radius.circular(0),
-                            ),
-                          ),
-                          gradient: LinearGradient(
-                              colors: [Colors.amber, primaryDark],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter)),
-                      alignment: Alignment.topRight,
-                      padding: const EdgeInsets.only(
-                          top: 0, right: 0, bottom: 0, left: 0),
-                    )
-                  ],
-                ),
               ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 200,
+            child: Container(
+              height: 200,
+              decoration: const ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(0),
+                      bottomLeft: Radius.circular(0),
+                      bottomRight: Radius.circular(0),
+                      topRight: Radius.circular(300)),
+                ),
+                gradient: LinearGradient(
+                  colors: [Colors.amber, primaryDark],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
             ),
           ),
         ],

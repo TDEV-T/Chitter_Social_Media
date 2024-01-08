@@ -68,7 +68,12 @@ class LoginForm extends StatelessWidget {
                           color: Colors.amber,
                         ),
                       ),
-                      onTap: () => {Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage()))},
+                      onTap: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterScreen()))
+                      },
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,

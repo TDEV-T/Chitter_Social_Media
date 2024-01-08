@@ -1,33 +1,23 @@
 import 'package:chitter/screens/login/login_form.dart';
-import 'package:chitter/screens/register/register_form.dart';
 import 'package:chitter/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 // ... your other imports
 
-class RegisterScreen extends StatefulWidget {
+class mainScreen extends StatefulWidget {
   // ... your widget code
 
   @override
-  _RegisterScreen createState() => _RegisterScreen();
+  _mainScreen createState() => _mainScreen();
 }
 
-class _RegisterScreen extends State<RegisterScreen> {
+class _mainScreen extends State<mainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(
-            top: 25,
-            left:20,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Icon(Icons.arrow_back_ios_new_outlined),
-            ),
-          ),
+          // วาง Container ด้านบน
           Positioned(
             top: 0,
             left: 200,
@@ -60,9 +50,14 @@ class _RegisterScreen extends State<RegisterScreen> {
                   child: const Column(
                     children: [
                       Text(
-                        "Sign Up",
+                        "Login",
                         style: TextStyle(
                             fontSize: 30, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start,
+                      ),
+                      Text(
+                        "Please Sign in",
+                        style: TextStyle(fontSize: 20, color: secondaryText),
                         textAlign: TextAlign.start,
                       ),
                     ],
@@ -74,7 +69,7 @@ class _RegisterScreen extends State<RegisterScreen> {
                 Container(
                   alignment: Alignment.center,
                   margin: const EdgeInsets.all(20),
-                  child: RegisterForm(),
+                  child: LoginForm(),
                 ),
               ],
             ),
