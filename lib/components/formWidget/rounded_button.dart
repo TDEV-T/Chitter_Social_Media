@@ -1,3 +1,4 @@
+import 'package:chitter/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatefulWidget {
@@ -26,9 +27,13 @@ class _RoundedButtonState extends State<RoundedButton> {
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
         ),
         backgroundColor: isPressed ? Colors.amber[300] : Colors.amber[500],
+        side:BorderSide(
+          color: isPressed ? primary : Colors.amber,
+          width: 2.0,
+        )
       ),
       child: Ink(
         decoration: BoxDecoration(
@@ -39,7 +44,7 @@ class _RoundedButtonState extends State<RoundedButton> {
           alignment: Alignment.center,
           child: Text(
             widget.label,
-            style: const TextStyle(fontSize: 15, color: Colors.white),
+            style: const TextStyle(fontSize: 15, color: Colors.black),
           ),
         ),
       ),

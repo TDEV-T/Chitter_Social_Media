@@ -1,4 +1,4 @@
-import 'package:chitter/screens/login_form.dart';
+import 'package:chitter/screens/login/login_form.dart';
 import 'package:chitter/themes/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
                 const SizedBox(
-                  height: 100,
+                  height: 80,
                 ),
                 Container(
                   alignment: Alignment.topLeft,
@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Container(
                   alignment: Alignment.center,
                   margin: const EdgeInsets.all(20),

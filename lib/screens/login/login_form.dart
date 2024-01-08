@@ -2,7 +2,7 @@ import 'package:chitter/components/formWidget/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../components/formWidget/textfield.dart';
+import '../../components/formWidget/textfield.dart';
 
 class LoginForm extends StatelessWidget {
   LoginForm({Key? key}) : super(key: key);
