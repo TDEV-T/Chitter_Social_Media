@@ -78,7 +78,15 @@ class LoginForm extends StatelessWidget {
                       splashColor: Colors.transparent,
                       focusColor: Colors.transparent,
                     ),
-                    RoundedButton(label: "Sign in", onPressed: () => {})
+                    RoundedButton(
+                        label: "Sign in",
+                        onPressed: () => {
+                              if (_formKeyLogin.currentState!.validate())
+                                {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('test')))
+                                }
+                            })
                   ],
                 )
               ],

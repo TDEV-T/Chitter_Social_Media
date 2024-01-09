@@ -15,6 +15,7 @@ class _LoginScreen extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // วาง Container ด้านบน
