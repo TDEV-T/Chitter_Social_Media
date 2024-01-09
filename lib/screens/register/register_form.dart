@@ -65,7 +65,7 @@ class RegisterForm extends StatelessWidget {
                     }
                     return null;
                   },
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.visiblePassword,
                   prefixIcon: const Icon(Icons.password_outlined),
                 ),
                 const SizedBox(height: 10),
@@ -97,7 +97,7 @@ class RegisterForm extends StatelessWidget {
                     }
                     return null;
                   },
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.emailAddress,
                   prefixIcon: const Icon(Icons.email_outlined),
                 ),
                 const SizedBox(height: 10),
@@ -111,18 +111,29 @@ class RegisterForm extends StatelessWidget {
                             _formKeyLogin.currentState!.save();
 
                             try {
-                              var resp = await RestAPI().registerUser({
-                                "username": username.text,
-                                "password": password.text,
-                                "fullname": fullname.text,
-                                "email": email.text
-                              });
-                              var body = jsonDecode(resp);
-                              Utility().logger.i(body);
+                              var resp = await RestAPI().registerUser(
+                                {
+                                  "username": username.text,
+                                  "password": password.text,
+                                  "fullname": fullname.text,
+                                  "email": email.text
+                                },
+                                context,
+                              );
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('test')));
-                            } catch (e) {}
+                              if (resp != null){
+                                var body = jsonDecode(resp);
+                                if (body['message'] != null){
+                                  Utility.showAlertDialog(context, "ok", body['message']);
+                                  _formKeyLogin.currentState!.reset();
+                                }
+                              }
+
+
+
+                            } catch (e) {
+                              Utility().logger.e(e);
+                            }
                           }
                         }),
                   ],
