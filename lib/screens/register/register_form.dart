@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:chitter/app_router.dart';
 import 'package:chitter/components/formWidget/rounded_button.dart';
 import 'package:chitter/screens/register/register_screen.dart';
+import 'package:chitter/services/rest_api.dart';
+import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -102,12 +106,32 @@ class RegisterForm extends StatelessWidget {
                   children: [
                     RoundedButton(
                       label: "Sign Up",
-                      onPressed: () => {
-                        if (_formKeyLogin.currentState!.validate())
-                          {
+                      onPressed: () async {
+                        try {
+                          if (_formKeyLogin.currentState!.validate()) {
+                            _formKeyLogin.currentState!.save();
+
+                            var resp = await RestAPI().registerUser({
+                              "username": username.text,
+                              "password": password.text,
+                              "fullname": fullname.text,
+                              "email": email.text
+                            });
+
+                            var body = jsonDecode(resp);
+
+                            Utility().logger.i(body);
+
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('test')))
-                          }
+                                const SnackBar(content: Text('test')));
+                          } else {}
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'การลงทะเบียนล้มเหลว: ${e.toString()}')),
+                          );
+                        }
                       },
                     ),
                   ],
