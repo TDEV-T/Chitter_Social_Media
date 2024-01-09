@@ -105,35 +105,26 @@ class RegisterForm extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     RoundedButton(
-                      label: "Sign Up",
-                      onPressed: () async {
-                        try {
+                        label: "Sign Up",
+                        onPressed: () async {
                           if (_formKeyLogin.currentState!.validate()) {
                             _formKeyLogin.currentState!.save();
 
-                            var resp = await RestAPI().registerUser({
-                              "username": username.text,
-                              "password": password.text,
-                              "fullname": fullname.text,
-                              "email": email.text
-                            });
+                            try {
+                              var resp = await RestAPI().registerUser({
+                                "username": username.text,
+                                "password": password.text,
+                                "fullname": fullname.text,
+                                "email": email.text
+                              });
+                              var body = jsonDecode(resp);
+                              Utility().logger.i(body);
 
-                            var body = jsonDecode(resp);
-
-                            Utility().logger.i(body);
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('test')));
-                          } else {}
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text(
-                                    'การลงทะเบียนล้มเหลว: ${e.toString()}')),
-                          );
-                        }
-                      },
-                    ),
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('test')));
+                            } catch (e) {}
+                          }
+                        }),
                   ],
                 )
               ],
