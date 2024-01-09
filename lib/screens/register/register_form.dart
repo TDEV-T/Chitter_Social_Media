@@ -13,7 +13,14 @@ class RegisterForm extends StatelessWidget {
   final username = TextEditingController();
   final password = TextEditingController();
   final fullname = TextEditingController();
-  final email = TextEditingController();
+  final email = TextEditingController(text: '');
+
+  bool validateEmail(String value) {
+    RegExp regex = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    print(value);
+    return (!regex.hasMatch(value)) ? false : true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +49,7 @@ class RegisterForm extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   prefixIcon: const Icon(Icons.person_2_outlined),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 TextInputField(
                   controller: password,
                   hintText: "Password",
@@ -57,7 +64,7 @@ class RegisterForm extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   prefixIcon: const Icon(Icons.password_outlined),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 TextInputField(
                   controller: fullname,
                   hintText: "Fullname",
@@ -72,28 +79,37 @@ class RegisterForm extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   prefixIcon: const Icon(Icons.person_3_outlined),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 TextInputField(
                   controller: email,
                   hintText: "Email",
                   validator: (value) {
-                    final regex = RegExp(
-                        r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$");
                     if (value == null || value.isEmpty) {
                       return "Email is Empty !";
-                    } else if (!regex.hasMatch(value)) {
-                      return "Invalid email address !";
+                    } else if (value != null && value.isNotEmpty) {
+                      if (!validateEmail(value)) {
+                        return "Invalid email address !";
+                      }
                     }
                     return null;
                   },
                   keyboardType: TextInputType.text,
                   prefixIcon: const Icon(Icons.email_outlined),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    RoundedButton(label: "Sign Up", onPressed: () => {})
+                    RoundedButton(
+                      label: "Sign Up",
+                      onPressed: () => {
+                        if (_formKeyLogin.currentState!.validate())
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('test')))
+                          }
+                      },
+                    ),
                   ],
                 )
               ],

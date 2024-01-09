@@ -16,11 +16,12 @@ class _RegisterScreen extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           Positioned(
             top: 25,
-            left:20,
+            left: 20,
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -53,7 +54,7 @@ class _RegisterScreen extends State<RegisterScreen> {
           Center(
             child: Column(
               children: [
-                const SizedBox(height: 150),
+                const SizedBox(height: 130),
                 Container(
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.all(20),
@@ -84,7 +85,7 @@ class _RegisterScreen extends State<RegisterScreen> {
             left: 0,
             right: 200,
             child: Container(
-              height: 200,
+              height: 175,
               decoration: const ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
