@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:chitter/app_router.dart';
 import 'package:chitter/components/formWidget/rounded_button.dart';
 import 'package:chitter/screens/register/register_screen.dart';
+import 'package:chitter/services/rest_api.dart';
+import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -80,13 +84,24 @@ class LoginForm extends StatelessWidget {
                     ),
                     RoundedButton(
                       label: "Sign in",
-                      onPressed: () => {
-                        if (_formKeyLogin.currentState!.validate())
-                          {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('test')))
-                          }
-                      },
+                      onPressed: () async
+                          {if (_formKeyLogin.currentState!.validate()) {
+                            try{
+                              var resp = await RestAPI().loginUser({"username":username.text,"password":password.text}, context);
+
+                              if (resp != null){
+                                var body = jsonDecode(resp);
+                                if(body['message'] != null){
+                                  Utility().logger.i(body['message']);
+                                  Utility.showAlertDialog(context, "sucess", body['message']);
+                                }
+                              }
+                            }catch(e){
+                              Utility().logger.e(e);
+                            }
+
+
+                          }},
                     ),
                   ],
                 )

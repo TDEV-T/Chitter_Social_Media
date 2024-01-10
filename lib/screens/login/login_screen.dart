@@ -18,7 +18,6 @@ class _LoginScreen extends State<LoginScreen> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          // วาง Container ด้านบน
           Positioned(
             top: 0,
             left: 200,
