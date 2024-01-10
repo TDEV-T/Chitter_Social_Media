@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class RestAPI {
   final Dio _dio = DioConfig.dio;
 
-   registerUser(data, BuildContext context) async {
+  registerUser(data, BuildContext context) async {
     try {
       final resp = await _dio.post('register', data: jsonEncode(data));
       return jsonEncode(resp.data);
@@ -16,7 +16,8 @@ class RestAPI {
       if (e.response?.statusCode == 400) {
         if (e.response?.data?.containsKey('message')) {
           Utility().logger.e(e.response?.data?['message']);
-          Utility.showAlertDialog(context, "error", e.response?.data?['message']);
+          Utility.showAlertDialog(
+              context, "error", e.response?.data?['message']);
         } else {
           Utility().logger.e("ไม่สามารถดำเนินการได้ กรุณาลองใหม่อีกครั้ง");
         }
@@ -26,19 +27,36 @@ class RestAPI {
     }
   }
 
+  loginUser(data, BuildContext context) async {
+    try {
+      final resp = await _dio.post('login', data: jsonEncode(data));
+      return jsonEncode(resp.data);
+    } on DioException catch (e) {
+      if (e.response?.data?.containsKey('message')) {
+        Utility().logger.e(e.response?.data?['message']);
+        Utility.showAlertDialog(context, "error", e.response?.data?['message']);
+      } else {
+        Utility.showAlertDialog(
+            context, "error", "เกิดข้อผิดพลาดบางอย่างโปรดลองอีกครั้งภายหลัง !");
+        Utility().logger.e(e.response?.data);
+      }
+    }
+  }
 
-  loginUser(data,BuildContext context) async {
-     try {
-       final resp = await _dio.post('login', data: jsonEncode(data));
-       return jsonEncode(resp.data);
-     } on DioException catch(e){
-       if(e.response?.data?.containsKey('message')){
-         Utility().logger.e(e.response?.data?['message']);
-         Utility.showAlertDialog(context, "error", e.response?.data?['message']);
-       }else {
-         Utility.showAlertDialog(context, "error", "เกิดข้อผิดพลาดบางอย่างโปรดลองอีกครั้งภายหลัง !");
-         Utility().logger.e(e.response?.data);
-       }
-     }
+  CurUser(data) async {
+    try {
+      final resp = await _dio.post('checkCurUser',options:Options(
+        headers:{
+          "authtoken":data,
+        }
+      ));
+      return jsonEncode(resp.data);
+    } on DioException catch (e) {
+      if (e.response?.data?.containsKey('message')) {
+        Utility().logger.e(e.response?.data?['message']);
+      }else{
+        Utility().logger.e(e.response?.data);
+      }
+    }
   }
 }

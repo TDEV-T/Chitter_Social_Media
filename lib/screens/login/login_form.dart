@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chitter/app_router.dart';
 import 'package:chitter/components/formWidget/rounded_button.dart';
+import 'package:chitter/screens/homepage/home_screen.dart';
 import 'package:chitter/screens/register/register_screen.dart';
 import 'package:chitter/services/rest_api.dart';
 import 'package:chitter/utils/utils.dart';
@@ -94,6 +95,25 @@ class LoginForm extends StatelessWidget {
                                 if(body['message'] != null){
                                   Utility().logger.i(body['message']);
                                   Utility.showAlertDialog(context, "sucess", body['message']);
+
+                                  if(body['message'] == "Login Successfully"){
+
+                                    if(body['token'] != null || body['token'] != ""){
+                                      await Utility.initSharedPrefs();
+                                      print(body['token']);
+                                      Utility.setSharedPrefs("token", body['token']);
+                                      Utility.setSharedPrefs("username", body['username']);
+                                      Utility.setSharedPrefs("email", body['useremail']);
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        AppRouter.home,
+                                        result:null,
+                                      );
+                                    }else{
+                                      Utility.showAlertDialog(context, "error", "เกิดข้อผิดพลาดทางเทคนิค");
+                                    }
+
+                                  }
                                 }
                               }
                             }catch(e){
