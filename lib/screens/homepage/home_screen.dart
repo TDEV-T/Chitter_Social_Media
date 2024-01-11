@@ -1,4 +1,5 @@
 import 'package:chitter/components/drawerWidget/UserAccountShow.dart';
+import 'package:chitter/screens/feeds/feed_screen.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -30,14 +31,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
+          title: Center(child:Text("Chitter")),
+          actions: [
+            IconButton(onPressed: (){}, icon: Icon(Icons.search_outlined))
+          ],
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.home)),
-              Tab(icon: Icon(Icons.search_outlined)),
-              Tab(icon: Icon(Icons.home)),
+              Tab(icon: Icon(Icons.person)),
             ],
           ),
         ),
@@ -97,9 +101,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body:  TabBarView(
           children: [
-            Container(child:Text("1")),
+            Feed_Screen(),
             Container(child:Text("2")),
-            Container(child:Text("3")),
           ],
         ),
       ),

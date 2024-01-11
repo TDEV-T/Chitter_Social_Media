@@ -117,6 +117,7 @@ class LoginForm extends StatelessWidget {
                                 }
                               }
                             }catch(e){
+                              print(e);
                               Utility().logger.e(e);
                             }
 
