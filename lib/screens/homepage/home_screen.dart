@@ -1,6 +1,6 @@
+import 'package:chitter/components/drawerWidget/UserAccountShow.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future? _getUserFuture;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _getUserFuture = getUserInfo();
   }
@@ -24,42 +24,84 @@ class _HomeScreenState extends State<HomeScreen> {
     await Utility.initSharedPrefs();
     username = await Utility.getSharedPrefs("username");
     email = await Utility.getSharedPrefs("email");
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      appBar: AppBar(
-
-      ),
-      drawer: Drawer(
-          child:Column(
-              children: [
-                ListView(
-                  shrinkWrap: true,
-                  children: [
-                    FutureBuilder(
-                        future: getUserInfo(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return UserAccountsDrawerHeader(accountName: Text(username ?? ""), accountEmail: Text(email ?? ""));
-                          } else {
-                            return CircularProgressIndicator();
-                          }
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.home)),
+              Tab(icon: Icon(Icons.search_outlined)),
+              Tab(icon: Icon(Icons.home)),
+            ],
+          ),
+        ),
+        drawer: Drawer(
+          child: Column(
+            children: [
+              ListView(
+                shrinkWrap: true,
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.arrow_back),
+                    title: Text("Back"),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  FutureBuilder(
+                      future: getUserInfo(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return UserAccountShow(
+                              username: username ?? "",
+                              imgSrc:
+                                  "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg");
+                        } else {
+                          return const CircularProgressIndicator();
                         }
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.home_outlined),
-                      title: Text('Home'),
-                    ),
-                  ],
-                )
-              ],
-          )
-      ),
-      body: Center(
-        child:Text("Home Screen"),
+                      }),
+                  const ListTile(
+                    leading: Icon(Icons.home_outlined),
+                    title: Text('Home'),
+                  ),
+                  const ListTile(
+                    leading: Icon(Icons.person_outline),
+                    title: Text("Profile"),
+                  ),
+                  const ListTile(
+                    leading: Icon(Icons.notifications_active_outlined),
+                    title: Text("Notifications"),
+                  ),
+                  const ListTile(
+                    leading: Icon(Icons.settings_outlined),
+                    title: Text("Settings"),
+                  ),
+                  const ListTile(
+                    leading: Icon(Icons.search_outlined),
+                    title: Text("Search"),
+                  ),
+                  const ListTile(
+                    leading: Icon(Icons.message_outlined),
+                    title: Text("Messaging"),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+        body:  TabBarView(
+          children: [
+            Container(child:Text("1")),
+            Container(child:Text("2")),
+            Container(child:Text("3")),
+          ],
+        ),
       ),
     );
   }

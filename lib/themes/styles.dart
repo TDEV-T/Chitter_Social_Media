@@ -29,7 +29,7 @@ class AppTheme {
         fontWeight: FontWeight.bold,
         fontSize: 20,
       ),
-      backgroundColor: primary,
+      backgroundColor: primaryLight,
       foregroundColor: icons,
       iconTheme: IconThemeData(color: icons),
     ),
