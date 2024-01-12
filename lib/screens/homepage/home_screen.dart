@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
           bottom: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.home)),
-              Tab(icon: Icon(Icons.person)),
+              Tab(icon: Icon(Icons.people)),
             ],
           ),
         ),
