@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:chitter/models/PostModel.dart';
 import 'package:chitter/services/dio_config.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:dio/dio.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 
 class RestAPI {
   final Dio _dio = DioConfig.dio;
+  final Dio _dioWithAuth = DioConfig.dioWithAuth;
 
   registerUser(data, BuildContext context) async {
     try {
@@ -58,5 +60,16 @@ class RestAPI {
         Utility().logger.e(e.response?.data);
       }
     }
+  }
+
+  Future<List<PostModel>> getFeeds() async {
+    final response = await _dioWithAuth.get('posts/feed');
+
+    if(response.statusCode == 200){
+      final List<PostModel> feeds = postModelFromJson(json.encode(response.data));
+      return feeds;
+    }
+
+    throw Exception("Failed to load Posts");
   }
 }

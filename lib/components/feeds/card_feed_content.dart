@@ -10,43 +10,38 @@ class CardFeedContent extends StatelessWidget {
   final String text;
   final String imgSrc;
 
-  late List<String> imageList;
+  late List<dynamic> imageList;
+  late int gridViewLayout = 2;
 
   @override
   Widget build(BuildContext context) {
-    // if(imgSrc.isNotEmpty){
-    //   print(imgSrc);
-    // imageList = jsonDecode(imgSrc) as List<String>;
-    // }
+    if(imgSrc.isNotEmpty || imgSrc != ""){
+    imageList = jsonDecode(imgSrc) as List<dynamic>;
+    gridViewLayout = imageList.length == 1 ? 1 : 2;
+    }
     return Container(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start
+          ,
         children: [
-        Text(textContent),
-        Container(height: 300, child: _gridView()),
+          Text(text),
+        Container(child: _gridView(imageList)),
       ],
     ));
   }
 
-  Widget _gridView() {
+  Widget _gridView(List<dynamic> img) {
     return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2 // จำนวนคอลัมน์
+      shrinkWrap: true,
+        gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: gridViewLayout,
             ),
-        itemCount: 4,
+        itemCount: imageList.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.grey,
-                      offset: Offset(0, 1),
-                      blurRadius: 2,
-                    )
-                  ]),
+             child:Image.network(imageAPI+img[index])
             ),
           );
         });
