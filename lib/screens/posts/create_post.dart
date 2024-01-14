@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chitter/components/formWidget/VideoPreview.dart';
 import 'package:chitter/components/formWidget/imagepreview.dart';
 import 'package:chitter/components/formWidget/rounded_button.dart';
 import 'package:chitter/components/formWidget/textfieldpost.dart';
@@ -24,9 +25,22 @@ class _CreatePostState extends State<CreatePost> {
   double process = 0.0;
   late int MaxLengthTyping = 100;
 
-  final ImagePicker _picker = ImagePicker();
+  final  ImagePicker _picker = ImagePicker();
+  File? _video;
   List<XFile>? _media = [];
   String mediaType = "";
+
+  Future<void> _pickVideo() async {
+    final video = await _picker.pickVideo(source: ImageSource.gallery);
+
+    if(video != null){
+      setState(() {
+        _video = File(video!.path);
+      });
+    }
+
+    mediaType = "video";
+  }
 
   Future<void> _pickImage() async {
     final List<XFile>? selectImage = await _picker.pickMultiImage();
@@ -51,7 +65,6 @@ class _CreatePostState extends State<CreatePost> {
   void initState() {
     super.initState();
     content.addListener(() {
-      print(content.text);
       updateProgress(content.text);
     });
   }
@@ -66,7 +79,7 @@ class _CreatePostState extends State<CreatePost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Chitter")),
+        title: const Center(child: Text("Chitter")),
         actions: [
           Container(
             margin: const EdgeInsets.all(5),
@@ -76,15 +89,12 @@ class _CreatePostState extends State<CreatePost> {
                   if (_formKeyPost.currentState!.validate()) {
                     var resp =
                         await RestAPI().createPost(content.text, _media);
-
-
                     if (resp != null) {
                       var body = jsonDecode(resp);
                       if(body['message'] != ""){
                         ScaffoldMessenger.of(context).showSnackBar(Utility.showSnackBar(body['message']));
                         Navigator.pop(context);
                       }
-
                     }
                   }
                 }),
@@ -115,15 +125,11 @@ class _CreatePostState extends State<CreatePost> {
                       child: Row(
                     children: [
                       IconButton(
-                        onPressed: _media == null
-                            ? _pickImage
-                            : _media != null && _media!.length < 4
-                                ? _pickImage
-                                : null,
+                        onPressed: mediaType != "video" ? _pickImage : null,
                         icon: const Icon(Icons.image),
                       ),
                       IconButton(
-                          onPressed: mediaType != "picture" ? () {} : null,
+                          onPressed: mediaType != "picture" ? _pickVideo : null,
                           icon: const Icon(Icons.gif_box_outlined)),
                       const Text(
                         "Max 4 Picture or 1 Video",
@@ -147,7 +153,11 @@ class _CreatePostState extends State<CreatePost> {
                   )
                 ],
               ),
-              ImagePreview(image: _media, mdt: mediaType),
+              (mediaType == "picture") ?
+              ImagePreview(image: _media, mdt: mediaType)
+              : (mediaType == "video") ?
+              VideoPlayerScreen(filePath: _video!.path)
+              :  Container()
             ],
           ),
         ),

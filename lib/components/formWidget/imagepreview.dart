@@ -16,7 +16,8 @@ class ImagePreview extends StatefulWidget {
 class _ImagePreviewState extends State<ImagePreview> {
   @override
   Widget build(BuildContext context) {
-    return (widget.image != null)
+    return (widget.mdt == "picture") ?
+     (widget.image != null)
         ? Semantics(
             label: "Image List",
             child: GridView.builder(
@@ -77,6 +78,9 @@ class _ImagePreviewState extends State<ImagePreview> {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2)),
           )
-        : Text("No Image Selected");
+        : const Text("No Image Selected")
+        : (widget.mdt == "video") ?
+        const Text("Video")
+        : const Text("No Media Selected");
   }
 }
