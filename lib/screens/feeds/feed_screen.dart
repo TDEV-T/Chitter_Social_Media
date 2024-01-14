@@ -9,15 +9,33 @@ import 'package:flutter/material.dart';
 class Feed_Screen extends StatefulWidget {
   const Feed_Screen({super.key});
 
+
   @override
   State<Feed_Screen> createState() => _Feed_ScreenState();
 }
 
 class _Feed_ScreenState extends State<Feed_Screen> {
+  Future<List<PostModel>>? _feedsFuture;
+
+
+  @override
+  void initState(){
+    super.initState();
+    _feedsFuture = RestAPI().getFeeds();
+  }
+
+  void _reloadFeeds(){
+    setState(() {
+      _feedsFuture = RestAPI().getFeeds();
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(future: RestAPI().getFeeds(), builder: (context,AsyncSnapshot snapshot){
+      body: FutureBuilder(future: _feedsFuture, builder: (context,AsyncSnapshot snapshot){
         if(snapshot.hasError){
           return Text("Failed to Load Feeds");
         }else if(snapshot.connectionState == ConnectionState.done){
@@ -31,13 +49,15 @@ class _Feed_ScreenState extends State<Feed_Screen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,MaterialPageRoute(builder:(context) => CreatePost()));
+          Navigator.push(context,MaterialPageRoute(builder:(context) => CreatePost())).then((value) => {
+            _reloadFeeds()
+          });
         },
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50)
         ),
-        child: Icon(Icons.add),
         backgroundColor: primary,
+        child: const Icon(Icons.add),
       ),
     );
 

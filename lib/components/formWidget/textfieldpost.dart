@@ -4,12 +4,16 @@ class TextFieldPost extends StatelessWidget {
     required this.controller,
     required this.hintText,
     required this.validator,
+    required this.onChange,
+    required this.maxLength,
     required this.keyboardType}) : super(key: key);
 
 
   final TextEditingController controller;
   final String hintText;
   final String? Function(String?) validator;
+  final int? maxLength;
+  final void  Function(String?) onChange;
   final TextInputType keyboardType;
 
   @override
@@ -22,7 +26,8 @@ class TextFieldPost extends StatelessWidget {
       enableSuggestions: false,
       autocorrect: false,
       maxLines: null,
-      maxLength: 1000,
+      maxLength: maxLength,
+      onChanged: onChange,
       validator: validator,
       decoration:  InputDecoration(
         errorText: validator(controller.value.toString()),

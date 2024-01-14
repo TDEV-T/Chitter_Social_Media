@@ -97,7 +97,6 @@ class LoginForm extends StatelessWidget {
                                   Utility.showAlertDialog(context, "sucess", body['message']);
 
                                   if(body['message'] == "Login Successfully"){
-
                                     if(body['token'] != null || body['token'] != ""){
                                       await Utility.initSharedPrefs();
                                       print(body['token']);
@@ -118,7 +117,7 @@ class LoginForm extends StatelessWidget {
                               }
                             }catch(e){
                               print(e);
-                              Utility().logger.e(e);
+                              Utility.showAlertDialog(context, "error", e.toString());
                             }
 
 

@@ -67,6 +67,10 @@ class Utility {
     return await _prefs!.containsKey(key);
   }
 
+  static showSnackBar(String content) {
+    return SnackBar(content: Text(content),behavior: SnackBarBehavior.floating);
+  }
+
   static showAlertDialog(context, title, content) {
     AlertDialog buildAlertDialog(Color backgroundColor, IconData icon) {
       return AlertDialog(

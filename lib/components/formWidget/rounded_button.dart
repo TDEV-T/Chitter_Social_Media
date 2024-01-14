@@ -18,7 +18,7 @@ class _RoundedButtonState extends State<RoundedButton> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async{
         widget.onPressed();
         setState(() {
           isPressed = !isPressed;

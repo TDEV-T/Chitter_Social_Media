@@ -14,6 +14,9 @@ class CardFeed extends StatelessWidget {
   Widget build(BuildContext context) {
     String profilePath = pml.user?.profilepicture ?? "default.png";
     String profileImage = urlAPI +"images/"+ profilePath;
+
+
+
     return Container(
       margin: const EdgeInsets.all(10),
       child: Column(

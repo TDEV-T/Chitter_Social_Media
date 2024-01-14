@@ -10,13 +10,18 @@ class CardFeedContent extends StatelessWidget {
   final String text;
   final String imgSrc;
 
-  late List<dynamic> imageList;
+
+  late List<dynamic> imageList = [];
   late int gridViewLayout = 2;
 
   @override
   Widget build(BuildContext context) {
-    if(imgSrc.isNotEmpty || imgSrc != ""){
-    imageList = jsonDecode(imgSrc) as List<dynamic>;
+    if(imgSrc != "" && imgSrc.isNotEmpty  ){
+
+      var decoded = jsonDecode(imgSrc);
+      if(decoded != null){
+        imageList = decoded;
+      }
     gridViewLayout = imageList.length == 1 ? 1 : 2;
     }
     return Container(
@@ -25,7 +30,7 @@ class CardFeedContent extends StatelessWidget {
           ,
         children: [
           Text(text),
-        Container(child: _gridView(imageList)),
+          imageList != null || imageList.isNotEmpty ? Container(child: _gridView(imageList)) : Container(),
       ],
     ));
   }
