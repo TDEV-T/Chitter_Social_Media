@@ -22,7 +22,7 @@ class CardFeed extends StatelessWidget {
       child: Column(
         children: [
           CardFeedHeader(username: pml.user?.username ?? "", fullname: pml.user?.fullname ?? "", imgSrc: profileImage),
-          CardFeedContent(text: pml?.content ?? "", imgSrc: pml?.image ?? ""),
+          CardFeedContent(text: pml?.content ?? "", imgSrc: pml?.image ?? "",mdt:pml?.contenttype ?? "picture"),
           CardFeedFooter(comments: pml?.comments ?? [], likes: pml?.likes ?? [],date:pml?.createdAt ?? DateTime.timestamp())
         ],
       ),

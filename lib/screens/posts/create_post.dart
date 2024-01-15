@@ -25,15 +25,15 @@ class _CreatePostState extends State<CreatePost> {
   double process = 0.0;
   late int MaxLengthTyping = 100;
 
-  final  ImagePicker _picker = ImagePicker();
+  final ImagePicker _picker = ImagePicker();
   File? _video;
   List<XFile>? _media = [];
-  String mediaType = "";
+  String mediaType = "all";
 
   Future<void> _pickVideo() async {
     final video = await _picker.pickVideo(source: ImageSource.gallery);
 
-    if(video != null){
+    if (video != null) {
       setState(() {
         _video = File(video!.path);
       });
@@ -87,12 +87,18 @@ class _CreatePostState extends State<CreatePost> {
                 icon: Icon(Icons.check),
                 onPressed: () async {
                   if (_formKeyPost.currentState!.validate()) {
-                    var resp =
-                        await RestAPI().createPost(content.text, _media);
+                    var resp = null;
+                    if (mediaType == "picture") {
+                      resp = await RestAPI().createPost(content.text, _media);
+                    } else if (mediaType == "video") {
+                      resp = await RestAPI()
+                          .createPostVideoContent(content.text, _video);
+                    }
                     if (resp != null) {
                       var body = jsonDecode(resp);
-                      if(body['message'] != ""){
-                        ScaffoldMessenger.of(context).showSnackBar(Utility.showSnackBar(body['message']));
+                      if (body['message'] != "") {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            Utility.showSnackBar(body['message']));
                         Navigator.pop(context);
                       }
                     }
@@ -153,11 +159,24 @@ class _CreatePostState extends State<CreatePost> {
                   )
                 ],
               ),
-              (mediaType == "picture") ?
-              ImagePreview(image: _media, mdt: mediaType)
-              : (mediaType == "video") ?
-              VideoPlayerScreen(filePath: _video!.path)
-              :  Container()
+              (mediaType == "picture")
+                  ? ImagePreview(
+                      image: _media,
+                      mdt: mediaType,
+                      onPressed: () async {
+                        setState(() {});
+                      })
+                  : (mediaType == "video")
+                      ? VideoPlayerScreen(
+                          filePath: _video!.path,
+                          onPressed: () async {
+                            setState(() {
+                              mediaType = "all";
+                              _video = null;
+                            });
+                          },
+                        )
+                      : Container()
             ],
           ),
         ),

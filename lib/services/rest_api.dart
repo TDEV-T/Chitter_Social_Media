@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:chitter/models/PostModel.dart';
 import 'package:chitter/services/dio_config.dart';
@@ -6,6 +7,7 @@ import 'package:chitter/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 
 class RestAPI {
   final Dio _dio = DioConfig.dio;
@@ -97,6 +99,27 @@ class RestAPI {
         }
       }
     }
+
+    try{
+      final resp = await _dioWithAuth.post('posts',data:formData);
+      return jsonEncode(resp.data);
+    }on DioException catch(e){
+      Utility().logger.e(e);
+      throw ("Can't Post");
+    }
+  }
+
+
+  Future<String> createPostVideoContent(String content, File? video) async {
+    var formData = FormData();
+
+    formData.fields.add(MapEntry('content', content));
+    if (video != null ) {
+      var multipartFile = await MultipartFile.fromFile(video.path,
+        filename: video.path.split('/').last);
+      formData.files.add(MapEntry('file',multipartFile));
+    }
+
 
     try{
       final resp = await _dioWithAuth.post('posts',data:formData);

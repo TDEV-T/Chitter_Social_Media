@@ -1,14 +1,16 @@
 import 'dart:io';
 
+import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
 class ImagePreview extends StatefulWidget {
-   ImagePreview({Key? key, required this.image,required this.mdt}) : super(key: key);
+   ImagePreview({Key? key, required this.image,required this.mdt,required this.onPressed}) : super(key: key);
 
   final List<XFile>? image;
   String mdt;
+   final VoidCallback onPressed;
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
 }
@@ -58,11 +60,11 @@ class _ImagePreviewState extends State<ImagePreview> {
                                     setState(() {
                                       widget.image!.removeAt(index);
 
-                                      if(widget.image == null && widget.image!.isEmpty && widget.image!.length == 0){
-                                        widget.mdt = "";
+                                      if(widget.image!.length < 1){
+                                        widget.mdt = "all";
+                                        widget.onPressed();
+                                        Utility().logger.i("MDT Change" + widget.mdt);
                                       }
-
-                                      print(widget.mdt);
                                     });
                                   }
                                 });

@@ -4,12 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
-  VideoPlayerScreen({Key? key, required this.filePath}) : super(key: key);
+  const VideoPlayerScreen({Key? key, required this.filePath,required this.onPressed}) : super(key: key);
 
-  final String filePath;
+
+  final String? filePath;
+  final VoidCallback onPressed;
+
+
+
 
   @override
   _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
+
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
@@ -18,45 +24,71 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.file(File(widget.filePath))..initialize().then((_) {
+    if (widget.filePath != null) {
+      _controller = VideoPlayerController.file(File(widget.filePath!));
+    } else {
+      // Fallback to a default asset if no file path is provided
+      _controller = VideoPlayerController.asset('assets/images/video.mp4');
+    }
+    _controller!.addListener(() {
       setState(() {});
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Video Player'),
-      ),
-      body: Center(
-        child: _controller!.value.isInitialized
-            ? AspectRatio(
-          aspectRatio: _controller!.value.aspectRatio,
-          child: VideoPlayer(_controller!),
-        )
-            : CircularProgressIndicator(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            if (_controller!.value.isPlaying) {
-              _controller!.pause();
-            } else {
-              _controller!.play();
-            }
-          });
-        },
-        child: Icon(
-          _controller!.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        ),
-      ),
-    );
+    _controller!.setLooping(true);
+    _controller!.initialize().then((_) => setState(() {}));
+    _controller!.play();
   }
 
   @override
   void dispose() {
+    _controller?.dispose();
     super.dispose();
-    _controller!.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _controller!.value.isInitialized
+            ? GestureDetector(
+          onTap: (){
+            setState(() {
+              if(_controller!.value.isPlaying){
+                _controller!.pause();
+              }else{
+                _controller!.play();
+              }
+            });
+          },
+          child:Stack(
+          children: <Widget>[
+              AspectRatio(
+               aspectRatio: _controller!.value.aspectRatio,
+               child: VideoPlayer(_controller!),
+             ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                margin: const EdgeInsets.only(top:5),
+                decoration: BoxDecoration(color:Colors.white,shape: BoxShape.circle),
+                child: IconButton(
+                  iconSize: 20,
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.black,
+                  ),
+                  onPressed: () async {
+                    widget.onPressed();
+                  }
+                ),
+              ),
+            ),
+          ],
+        ),)
+            : const CircularProgressIndicator(),
+      ],
+    );
+  }
+
+
 }

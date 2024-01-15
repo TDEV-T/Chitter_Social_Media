@@ -15,6 +15,7 @@ class PostModel {
   dynamic deletedAt;
   int? userId;
   String? content;
+  String? contenttype;
   String? image;
   bool? public;
   List<Comment>? likes;
@@ -28,6 +29,7 @@ class PostModel {
     this.deletedAt,
     this.userId,
     this.content,
+    this.contenttype,
     this.image,
     this.public,
     this.likes,
@@ -42,6 +44,7 @@ class PostModel {
     deletedAt: json["DeletedAt"],
     userId: json["UserID"],
     content: json["content"],
+    contenttype:json["contenttype"],
     image: json["Image"],
     public: json["public"],
     likes: json["Likes"] == null ? [] : List<Comment>.from(json["Likes"]!.map((x) => Comment.fromJson(x))),

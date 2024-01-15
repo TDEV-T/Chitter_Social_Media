@@ -4,11 +4,12 @@ import 'package:chitter/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class CardFeedContent extends StatelessWidget {
-  CardFeedContent({Key? key, required this.text, required this.imgSrc})
+  CardFeedContent({Key? key, required this.text, required this.imgSrc,required this.mdt})
       : super(key: key);
 
   final String text;
   final String imgSrc;
+  final String mdt;
 
 
   late List<dynamic> imageList = [];
@@ -30,7 +31,7 @@ class CardFeedContent extends StatelessWidget {
           ,
         children: [
           Text(text),
-          imageList != null || imageList.isNotEmpty ? Container(child: _gridView(imageList)) : Container(),
+          imageList != null || imageList.isNotEmpty && mdt == "picture" ?   Container(child: _gridView(imageList)) : Container(),
       ],
     ));
   }
