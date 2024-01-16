@@ -114,10 +114,12 @@ class RestAPI {
     var formData = FormData();
 
     formData.fields.add(MapEntry('content', content));
+
     if (video != null ) {
       var multipartFile = await MultipartFile.fromFile(video.path,
         filename: video.path.split('/').last);
       formData.files.add(MapEntry('file',multipartFile));
+      formData.fields.add(const MapEntry('contenttype', 'video'));
     }
 
 

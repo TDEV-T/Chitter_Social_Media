@@ -49,7 +49,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                             decoration: BoxDecoration(color:Colors.white,shape: BoxShape.circle),
                             child: IconButton(
                               iconSize: 10,
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.close,
                                 color: Colors.black,
                               ),

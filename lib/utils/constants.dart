@@ -1,5 +1,6 @@
   const urlAPI = "http://192.168.1.6:8080/";
   const imageAPI = "http://192.168.1.6:8080/images/";
+  const videoAPI = "http://192.168.1.6:8080/video/";
 // const urlAPI = "http://192.168.18.240:8080/";
 
 

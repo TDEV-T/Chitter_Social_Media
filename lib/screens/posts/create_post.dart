@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chitter/components/animation/LoadingIndicator.dart';
 import 'package:chitter/components/formWidget/VideoPreview.dart';
 import 'package:chitter/components/formWidget/imagepreview.dart';
 import 'package:chitter/components/formWidget/rounded_button.dart';
 import 'package:chitter/components/formWidget/textfieldpost.dart';
 import 'package:chitter/services/rest_api.dart';
 import 'package:chitter/utils/utils.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
@@ -77,6 +79,9 @@ class _CreatePostState extends State<CreatePost> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool _isLoading = false;
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text("Chitter")),
@@ -87,98 +92,117 @@ class _CreatePostState extends State<CreatePost> {
                 icon: Icon(Icons.check),
                 onPressed: () async {
                   if (_formKeyPost.currentState!.validate()) {
+                    setState(() {
+                      _isLoading = true;
+                    });
+
                     var resp = null;
-                    if (mediaType == "picture") {
-                      resp = await RestAPI().createPost(content.text, _media);
-                    } else if (mediaType == "video") {
-                      resp = await RestAPI()
-                          .createPostVideoContent(content.text, _video);
-                    }
-                    if (resp != null) {
-                      var body = jsonDecode(resp);
-                      if (body['message'] != "") {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            Utility.showSnackBar(body['message']));
-                        Navigator.pop(context);
+                    try {
+                      if (mediaType == "picture") {
+                        resp = await RestAPI().createPost(content.text, _media);
+                      } else if (mediaType == "video") {
+                        resp = await RestAPI().createPostVideoContent(content.text, _video);
                       }
+
+                      if (resp != null) {
+                        var body = jsonDecode(resp);
+                        if (body['message'] != "") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              Utility.showSnackBar(body['message']));
+                          Navigator.pop(context);
+                        }
+                      }
+                    } on DioException catch (e) {
+                      Utility().logger.e(e);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          Utility.showSnackBar("Can't Post"));
+                    } finally {
+                      setState(() {
+                        _isLoading = false;
+                      });
                     }
                   }
                 }),
+
           )
         ],
       ),
       body: Container(
         margin: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKeyPost,
-          child: Column(
-            children: [
-              TextFieldPost(
-                  controller: content,
-                  hintText: 'What do u think ? ',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Content Text  Empty !";
-                    }
-                  },
-                  onChange: (text) => updateProgress(text.toString()),
-                  maxLength: MaxLengthTyping,
-                  keyboardType: TextInputType.text),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                      child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: mediaType != "video" ? _pickImage : null,
-                        icon: const Icon(Icons.image),
+        child: Stack(
+          children: [Form(
+            key: _formKeyPost,
+            child: Column(
+              children: [
+                TextFieldPost(
+                    controller: content,
+                    hintText: 'What do u think ? ',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Content Text  Empty !";
+                      }
+                    },
+                    onChange: (text) => updateProgress(text.toString()),
+                    maxLength: MaxLengthTyping,
+                    keyboardType: TextInputType.text),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                        child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: mediaType != "video" ? _pickImage : null,
+                          icon: const Icon(Icons.image),
+                        ),
+                        IconButton(
+                            onPressed: mediaType != "picture" ? _pickVideo : null,
+                            icon: const Icon(Icons.gif_box_outlined)),
+                        const Text(
+                          "Max 4 Picture or 1 Video",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    )),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: CircularProgressIndicator(
+                        value: process,
+                        backgroundColor: Colors.grey,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          process >= 1.0
+                              ? Colors.red
+                              : process >= 0.8
+                                  ? Colors.orange
+                                  : Colors.green,
+                        ),
                       ),
-                      IconButton(
-                          onPressed: mediaType != "picture" ? _pickVideo : null,
-                          icon: const Icon(Icons.gif_box_outlined)),
-                      const Text(
-                        "Max 4 Picture or 1 Video",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  )),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: CircularProgressIndicator(
-                      value: process,
-                      backgroundColor: Colors.grey,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        process >= 1.0
-                            ? Colors.red
-                            : process >= 0.8
-                                ? Colors.orange
-                                : Colors.green,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              (mediaType == "picture")
-                  ? ImagePreview(
-                      image: _media,
-                      mdt: mediaType,
-                      onPressed: () async {
-                        setState(() {});
-                      })
-                  : (mediaType == "video")
-                      ? VideoPlayerScreen(
-                          filePath: _video!.path,
-                          onPressed: () async {
-                            setState(() {
-                              mediaType = "all";
-                              _video = null;
-                            });
-                          },
-                        )
-                      : Container()
-            ],
+                    )
+                  ],
+                ),
+                (mediaType == "picture")
+                    ? ImagePreview(
+                        image: _media,
+                        mdt: mediaType,
+                        onPressed: () async {
+                          setState(() {});
+                        })
+                    : (mediaType == "video")
+                        ? VideoPlayerScreen(
+                            filePath: _video!.path,
+                            onPressed: () async {
+                              setState(() {
+                                mediaType = "all";
+                                _video = null;
+                              });
+                            },
+                          )
+                        : Container()
+              ],
+            ),
           ),
+          LoadingIndicator(isLoading: _isLoading)
+          ],
         ),
       ),
     );

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:chitter/components/feeds/VideoPreview.dart';
 import 'package:chitter/utils/constants.dart';
+import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class CardFeedContent extends StatelessWidget {
@@ -31,7 +33,7 @@ class CardFeedContent extends StatelessWidget {
           ,
         children: [
           Text(text),
-          imageList != null || imageList.isNotEmpty && mdt == "picture" ?   Container(child: _gridView(imageList)) : Container(),
+          imageList.isNotEmpty && mdt == "picture" ?   Container(child: _gridView(imageList)) :  imageList.isNotEmpty && mdt =="video" ?  VideoPreviewContent(filePath: imageList[0].toString()) : Container() ,
       ],
     ));
   }
@@ -52,4 +54,6 @@ class CardFeedContent extends StatelessWidget {
           );
         });
   }
+
+
 }
