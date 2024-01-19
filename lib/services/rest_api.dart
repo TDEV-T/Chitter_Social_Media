@@ -74,8 +74,13 @@ class RestAPI {
     }
   }
 
-  Future<List<PostModel>> getFeeds() async {
-    final response = await _dioWithAuth.get('posts/feed');
+  Future<List<PostModel>> getFeeds(String typefeed) async {
+    Response response;
+    if (typefeed == "public"){
+      response = await _dioWithAuth.get('posts/feed');
+    }else {
+       response = await _dioWithAuth.get("posts/follower");
+    }
 
     if (response.statusCode == 200) {
       final List<PostModel> feeds =

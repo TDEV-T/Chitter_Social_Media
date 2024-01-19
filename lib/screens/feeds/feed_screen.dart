@@ -7,9 +7,9 @@ import 'package:chitter/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 class Feed_Screen extends StatefulWidget {
-  const Feed_Screen({super.key});
+   const Feed_Screen({Key? key,required this.typefeed}) : super(key:key);
 
-
+   final String typefeed;
   @override
   State<Feed_Screen> createState() => _Feed_ScreenState();
 }
@@ -21,12 +21,12 @@ class _Feed_ScreenState extends State<Feed_Screen> {
   @override
   void initState(){
     super.initState();
-    _feedsFuture = RestAPI().getFeeds();
+    _feedsFuture = RestAPI().getFeeds(widget.typefeed!);
   }
 
   void _reloadFeeds(){
     setState(() {
-      _feedsFuture = RestAPI().getFeeds();
+      _feedsFuture = RestAPI().getFeeds(widget.typefeed!);
     });
   }
 
@@ -37,13 +37,13 @@ class _Feed_ScreenState extends State<Feed_Screen> {
     return Scaffold(
       body: FutureBuilder(future: _feedsFuture, builder: (context,AsyncSnapshot snapshot){
         if(snapshot.hasError){
-          return Text("Failed to Load Feeds");
+          return const Text("Failed to Load Feeds");
         }else if(snapshot.connectionState == ConnectionState.done){
           List<PostModel> feeds = snapshot.data;
 
           return _listView(feeds);
         }else {
-          return Center(child:CircularProgressIndicator());
+          return const Center(child:CircularProgressIndicator());
         }
       },
       ),

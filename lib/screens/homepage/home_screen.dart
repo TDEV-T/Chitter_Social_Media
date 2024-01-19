@@ -99,10 +99,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        body:  TabBarView(
+        body:  const TabBarView(
           children: [
-            Feed_Screen(),
-            Container(child:Text("2")),
+            Feed_Screen(typefeed:"public"),
+            Feed_Screen(typefeed:"follower"),
           ],
         ),
       ),
