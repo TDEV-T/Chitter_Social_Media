@@ -74,6 +74,8 @@ class _CreatePostState extends State<CreatePost> {
   @override
   void dispose() {
     content.dispose();
+    _video?.delete();
+    _media?.clear();
     super.dispose();
   }
 
@@ -107,6 +109,9 @@ class _CreatePostState extends State<CreatePost> {
                       if (resp != null) {
                         var body = jsonDecode(resp);
                         if (body['message'] != "") {
+
+                          if(!mounted) return;
+
                           ScaffoldMessenger.of(context).showSnackBar(
                               Utility.showSnackBar(body['message']));
                           Navigator.pop(context);

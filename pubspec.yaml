@@ -45,6 +45,7 @@ dependencies:
   mime: ^1.0.4
   video_player: ^2.8.2
   visibility_detector: ^0.4.0+2
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:

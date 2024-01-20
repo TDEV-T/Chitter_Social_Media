@@ -3,6 +3,8 @@ import 'package:chitter/screens/feeds/feed_screen.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 
+
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 

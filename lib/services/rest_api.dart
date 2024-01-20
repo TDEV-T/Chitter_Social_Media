@@ -91,6 +91,18 @@ class RestAPI {
     throw Exception("Failed to load Posts");
   }
 
+
+  Future<PostModel> getPostById(int id) async {
+    var resp = await _dioWithAuth.get("/posts/" + id.toString());
+
+    if (resp.statusCode == 200){
+      final PostModel post = postOneModelFromJson(json.encode(resp.data));
+      return post;
+    }
+
+    throw Exception("Fail to Load Data");
+  }
+
   Future<String> createPost(String content, List<XFile>? imageFiles) async {
     var formData = FormData();
 
@@ -134,6 +146,38 @@ class RestAPI {
     }on DioException catch(e){
       Utility().logger.e(e);
       throw ("Can't Post");
+    }
+  }
+
+
+  Future<String> createComment(data) async {
+    try{
+      final resp = await _dioWithAuth.post('comment',data:jsonEncode(data));
+      return jsonEncode(resp.data);
+    }on DioException catch(e){
+      Utility().logger.e(e);
+      throw ("Can't Post");
+    }
+  }
+
+
+  Future<String> likePost(data) async{
+    try{
+      final resp = await _dioWithAuth.post("like",data: jsonEncode(data));
+      return jsonEncode(resp.data);
+    }on DioException catch(e){
+      Utility().logger.e(e);
+      throw("Can't Like Post");
+    }
+  }
+
+  Future<String> dislikePost(int pid) async{
+    try{
+      final resp = await _dioWithAuth.post("like/unlike/"+pid.toString());
+      return jsonEncode(resp.data);
+    }on DioException catch(e) {
+      Utility().logger.e(e);
+      throw("Can't  Unlike Post");
     }
   }
 }

@@ -99,10 +99,11 @@ class LoginForm extends StatelessWidget {
                                   if(body['message'] == "Login Successfully"){
                                     if(body['token'] != null || body['token'] != ""){
                                       await Utility.initSharedPrefs();
-                                      print(body['token']);
                                       Utility.setSharedPrefs("token", body['token']);
                                       Utility.setSharedPrefs("username", body['username']);
+                                      Utility.setSharedPrefs("userid", body['userid']);
                                       Utility.setSharedPrefs("email", body['useremail']);
+
                                       Navigator.pushReplacementNamed(
                                         context,
                                         AppRouter.home,
@@ -119,8 +120,6 @@ class LoginForm extends StatelessWidget {
                               print(e);
                               Utility.showAlertDialog(context, "error", e.toString());
                             }
-
-
                           }},
                     ),
                   ],
