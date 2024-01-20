@@ -3,11 +3,9 @@ import 'package:chitter/components/feeds/card_feeds.dart';
 import 'package:chitter/controller/PostController.dart';
 import 'package:chitter/models/PostModel.dart';
 import 'package:chitter/screens/posts/create_post.dart';
-import 'package:chitter/services/rest_api.dart';
 import 'package:chitter/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 
 class Feed_Screen extends StatefulWidget {

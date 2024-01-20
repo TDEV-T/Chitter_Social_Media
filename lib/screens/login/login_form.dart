@@ -104,15 +104,14 @@ class LoginForm extends StatelessWidget {
                                       Utility.setSharedPrefs("userid", body['userid']);
                                       Utility.setSharedPrefs("email", body['useremail']);
 
-                                      Navigator.pushReplacementNamed(
+                                      Navigator.pushAndRemoveUntil(
                                         context,
-                                        AppRouter.home,
-                                        result:null,
+                                        MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+                                          (Route<dynamic> route) => false,
                                       );
                                     }else{
                                       Utility.showAlertDialog(context, "error", "เกิดข้อผิดพลาดทางเทคนิค");
                                     }
-
                                   }
                                 }
                               }
