@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 List<PostModel> postModelFromJson(String str) => List<PostModel>.from(json.decode(str).map((x) => PostModel.fromJson(x)));
+PostModel postOneModelFromJson(String str) => PostModel.fromJson(json.decode(str));
 
 String postModelToJson(List<PostModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
@@ -15,6 +16,7 @@ class PostModel {
   dynamic deletedAt;
   int? userId;
   String? content;
+  String? contenttype;
   String? image;
   bool? public;
   List<Comment>? likes;
@@ -28,6 +30,7 @@ class PostModel {
     this.deletedAt,
     this.userId,
     this.content,
+    this.contenttype,
     this.image,
     this.public,
     this.likes,
@@ -42,6 +45,7 @@ class PostModel {
     deletedAt: json["DeletedAt"],
     userId: json["UserID"],
     content: json["content"],
+    contenttype:json["contenttype"],
     image: json["Image"],
     public: json["public"],
     likes: json["Likes"] == null ? [] : List<Comment>.from(json["Likes"]!.map((x) => Comment.fromJson(x))),

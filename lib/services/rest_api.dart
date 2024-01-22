@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:chitter/models/PostModel.dart';
 import 'package:chitter/services/dio_config.dart';
@@ -6,6 +7,7 @@ import 'package:chitter/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 
 class RestAPI {
   final Dio _dio = DioConfig.dio;
@@ -72,8 +74,13 @@ class RestAPI {
     }
   }
 
-  Future<List<PostModel>> getFeeds() async {
-    final response = await _dioWithAuth.get('posts/feed');
+  Future<List<PostModel>> getFeeds(String typefeed) async {
+    Response response;
+    if (typefeed == "public"){
+      response = await _dioWithAuth.get('posts/feed');
+    }else {
+       response = await _dioWithAuth.get("posts/follower");
+    }
 
     if (response.statusCode == 200) {
       final List<PostModel> feeds =
@@ -82,6 +89,18 @@ class RestAPI {
     }
 
     throw Exception("Failed to load Posts");
+  }
+
+
+  Future<PostModel> getPostById(int id) async {
+    var resp = await _dioWithAuth.get("/posts/" + id.toString());
+
+    if (resp.statusCode == 200){
+      final PostModel post = postOneModelFromJson(json.encode(resp.data));
+      return post;
+    }
+
+    throw Exception("Fail to Load Data");
   }
 
   Future<String> createPost(String content, List<XFile>? imageFiles) async {
@@ -104,6 +123,61 @@ class RestAPI {
     }on DioException catch(e){
       Utility().logger.e(e);
       throw ("Can't Post");
+    }
+  }
+
+
+  Future<String> createPostVideoContent(String content, File? video) async {
+    var formData = FormData();
+
+    formData.fields.add(MapEntry('content', content));
+
+    if (video != null ) {
+      var multipartFile = await MultipartFile.fromFile(video.path,
+        filename: video.path.split('/').last);
+      formData.files.add(MapEntry('file',multipartFile));
+      formData.fields.add(const MapEntry('contenttype', 'video'));
+    }
+
+
+    try{
+      final resp = await _dioWithAuth.post('posts',data:formData);
+      return jsonEncode(resp.data);
+    }on DioException catch(e){
+      Utility().logger.e(e);
+      throw ("Can't Post");
+    }
+  }
+
+
+  Future<String> createComment(data) async {
+    try{
+      final resp = await _dioWithAuth.post('comment',data:jsonEncode(data));
+      return jsonEncode(resp.data);
+    }on DioException catch(e){
+      Utility().logger.e(e);
+      throw ("Can't Post");
+    }
+  }
+
+
+  Future<String> likePost(data) async{
+    try{
+      final resp = await _dioWithAuth.post("like",data: jsonEncode(data));
+      return jsonEncode(resp.data);
+    }on DioException catch(e){
+      Utility().logger.e(e);
+      throw("Can't Like Post");
+    }
+  }
+
+  Future<String> dislikePost(int pid) async{
+    try{
+      final resp = await _dioWithAuth.post("like/unlike/"+pid.toString());
+      return jsonEncode(resp.data);
+    }on DioException catch(e) {
+      Utility().logger.e(e);
+      throw("Can't  Unlike Post");
     }
   }
 }
