@@ -9,14 +9,16 @@ class UserController extends GetxController {
 
 
   @override
-  void onInit(){
+  void onInit() async {
     super.onInit();
     int id = Utility.getSharedPrefs("userid");
-    fetchUserByID(id);
+    fetchMySelf(id);
   }
   
-   void fetchUserByID(int id) async {
-      var usrResult = await RestAPI().GetUserProfileData(id);
+   void fetchMySelf(int id) async {
+      var usrResult = await RestAPI().getUserById(id);
+
+      Utility().logger.i(usrResult.posts);
 
       if (usrResult != null){
         myself.value = usrResult;

@@ -1,70 +1,66 @@
-  import 'package:chitter/controller/UserController.dart';
-  import 'package:chitter/utils/constants.dart';
-  import 'package:flutter/material.dart';
-  import 'package:get/get.dart';
-  import 'package:get/get_core/src/get_main.dart';
+import 'package:chitter/components/feeds/card_feeds.dart';
+import 'package:chitter/controller/UserController.dart';
+import 'package:chitter/models/PostModel.dart';
+import 'package:chitter/utils/constants.dart';
+import 'package:chitter/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
-  class profile_Screen extends StatefulWidget {
-    const profile_Screen({super.key});
+class profile_Screen extends StatefulWidget {
+  const profile_Screen({super.key});
 
-    @override
-    State<profile_Screen> createState() => _profile_ScreenState();
+  @override
+  State<profile_Screen> createState() => _profile_ScreenState();
+}
+
+class _profile_ScreenState extends State<profile_Screen> {
+  final UserController usrController = Get.put(UserController());
+
+  @override
+  void initState() {
+    super.initState();
+    int id = Utility.getSharedPrefs("userid");
+    usrController.fetchMySelf(id);
   }
 
-  class _profile_ScreenState extends State<profile_Screen> {
+  @override
+  Widget build(BuildContext context) {
+    String username = usrController.myself.value.username ?? "";
+    String email = usrController.myself.value.email ?? "";
 
-    @override
-    void initState(){
-      super.initState();
-
-    }
-
-
-    @override
-    Widget build(BuildContext context) {
-      var UserController usrcontrol = Get.put(UserController());
-      var profilePicture = imageAPI + usrcontrol.myself.value.profilePicture.toString();
-
-
-
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text("Profile"),
-        ),
-        body: ListView(
-          children: <Widget>[
-           const  UserAccountsDrawerHeader(
-              accountName: Text('Yuna Lu'),
-              accountEmail: Text('San Francisco'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Profile"),
+      ),
+      body: ListView(
+        children: <Widget>[
+          Obx(() {
+            var userController = Get.find<UserController>();
+            var user = userController.myself.value;
+            var profilePicture = imageAPI + user.profilePicture.toString();
+            return UserAccountsDrawerHeader(
+              accountName: Text(user.username.toString()),
+              accountEmail: Text(user.email.toString()),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage('url_to_yuna_avatar'),
+                backgroundImage: NetworkImage(profilePicture),
               ),
-              otherAccountsPictures: <Widget>[
-                CircleAvatar(
-                  backgroundImage: NetworkImage("${imageAPI + (profilePicture ?? 'default_image.png')}"),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(imageAPI+ user.coverfilePicture!),
+                  fit: BoxFit.cover
                 ),
-              ],
-            ),
-            const ListTile(
-              title: Text('friendly, exploring, eating, napping, fetch'),
-            ),
-            ListTile(
-              title: const Text('My posts'),
-              trailing: const Icon(Icons.keyboard_arrow_right),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('Likes'),
-              trailing: const Icon(Icons.keyboard_arrow_right),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('Bookmarks'),
-              trailing: const Icon(Icons.keyboard_arrow_right),
-              onTap: () {},
-            ),
-          ],
-        ),
-      );
-    }
+              ),
+            );
+          }),
+          ListTile(
+            title: const Text('My posts'),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {},
+          ),
+
+        ],
+      ),
+    );
   }
+}

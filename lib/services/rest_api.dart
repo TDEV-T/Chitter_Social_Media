@@ -77,10 +77,10 @@ class RestAPI {
 
   Future<List<PostModel>> getFeeds(String typefeed) async {
     Response response;
-    if (typefeed == "public"){
+    if (typefeed == "public") {
       response = await _dioWithAuth.get('posts/feed');
-    }else {
-       response = await _dioWithAuth.get("posts/follower");
+    } else {
+      response = await _dioWithAuth.get("posts/follower");
     }
 
     if (response.statusCode == 200) {
@@ -92,11 +92,10 @@ class RestAPI {
     throw Exception("Failed to load Posts");
   }
 
-
   Future<PostModel> getPostById(int id) async {
     var resp = await _dioWithAuth.get("/posts/" + id.toString());
 
-    if (resp.statusCode == 200){
+    if (resp.statusCode == 200) {
       final PostModel post = postOneModelFromJson(json.encode(resp.data));
       return post;
     }
@@ -113,92 +112,80 @@ class RestAPI {
         if (imgfile != null) {
           var multipartFile = await MultipartFile.fromFile(imgfile.path,
               filename: imgfile.name);
-          formData.files.add(MapEntry('file',multipartFile));
+          formData.files.add(MapEntry('file', multipartFile));
         }
       }
     }
 
-    try{
-      final resp = await _dioWithAuth.post('posts',data:formData);
+    try {
+      final resp = await _dioWithAuth.post('posts', data: formData);
       return jsonEncode(resp.data);
-    }on DioException catch(e){
+    } on DioException catch (e) {
       Utility().logger.e(e);
       throw ("Can't Post");
     }
   }
-
 
   Future<String> createPostVideoContent(String content, File? video) async {
     var formData = FormData();
 
     formData.fields.add(MapEntry('content', content));
 
-    if (video != null ) {
+    if (video != null) {
       var multipartFile = await MultipartFile.fromFile(video.path,
-        filename: video.path.split('/').last);
-      formData.files.add(MapEntry('file',multipartFile));
+          filename: video.path.split('/').last);
+      formData.files.add(MapEntry('file', multipartFile));
       formData.fields.add(const MapEntry('contenttype', 'video'));
     }
 
-
-    try{
-      final resp = await _dioWithAuth.post('posts',data:formData);
+    try {
+      final resp = await _dioWithAuth.post('posts', data: formData);
       return jsonEncode(resp.data);
-    }on DioException catch(e){
+    } on DioException catch (e) {
       Utility().logger.e(e);
       throw ("Can't Post");
     }
   }
-
 
   Future<String> createComment(data) async {
-    try{
-      final resp = await _dioWithAuth.post('comment',data:jsonEncode(data));
+    try {
+      final resp = await _dioWithAuth.post('comment', data: jsonEncode(data));
       return jsonEncode(resp.data);
-    }on DioException catch(e){
+    } on DioException catch (e) {
       Utility().logger.e(e);
       throw ("Can't Post");
     }
   }
 
-
-  Future<String> likePost(data) async{
-    try{
-      final resp = await _dioWithAuth.post("like",data: jsonEncode(data));
+  Future<String> likePost(data) async {
+    try {
+      final resp = await _dioWithAuth.post("like", data: jsonEncode(data));
       return jsonEncode(resp.data);
-    }on DioException catch(e){
+    } on DioException catch (e) {
       Utility().logger.e(e);
-      throw("Can't Like Post");
+      throw ("Can't Like Post");
     }
   }
 
-  Future<String> dislikePost(int pid) async{
-    try{
-      final resp = await _dioWithAuth.post("like/unlike/"+pid.toString());
+  Future<String> dislikePost(int pid) async {
+    try {
+      final resp = await _dioWithAuth.post("like/unlike/" + pid.toString());
       return jsonEncode(resp.data);
-    }on DioException catch(e) {
+    } on DioException catch (e) {
       Utility().logger.e(e);
-      throw("Can't  Unlike Post");
+      throw ("Can't  Unlike Post");
     }
   }
 
-  Future<UserModel> GetUserProfileData(int uid) async{
-    try{
-      final resp = await _dioWithAuth.get("users/${uid}");
+  Future<UserModel> getUserById(int uid) async {
+    try {
+      final resp = await _dioWithAuth.get("users/$uid");
 
-      if (resp.statusCode == 200){
-        final UserModel usr = userModelFromJson(resp.data);
-
-        return usr;
-      }
-
-      throw ("Can't Get User Data");
-    }on DioException catch(e) {
+      final UserModel usr = userModelFromJson(json.encode(resp.data));
+      return usr;
+    } on DioException catch (e) {
       Utility().logger.e(e);
-      throw("Can't  Unlike Post");
+      throw ("Can't Get user Data");
     }
   }
-
-
-
 }
