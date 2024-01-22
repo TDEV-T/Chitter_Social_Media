@@ -12,8 +12,8 @@ class CardFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String profilePath = pml.user?.profilepicture ?? "default.png";
-    String profileImage = urlAPI +"images/"+ profilePath;
+    String profilePath = pml.user!.profilepicture ?? "default.png";
+    String profileImage = imageAPI + profilePath;
 
 
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 class CardFeedHeader extends StatelessWidget {
   const CardFeedHeader({Key? key,required this.username,required this.fullname ,required this.imgSrc}) : super(key:key);
@@ -9,9 +10,9 @@ class CardFeedHeader extends StatelessWidget {
 
 
 
+
   @override
   Widget build(BuildContext context) {
-
     return Container(
       margin: const EdgeInsets.all(0),
       child:  Row(
@@ -24,12 +25,12 @@ class CardFeedHeader extends StatelessWidget {
                 height: 40,
                 fit: BoxFit.cover),
           ),
-          SizedBox(width:10),
+          const SizedBox(width:10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(username),
-              Text("@"+fullname,style: TextStyle(color: Colors.grey[500]),)
+              Text("@$fullname",style: TextStyle(color: Colors.grey[500]),)
             ],
           ),
         ],

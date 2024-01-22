@@ -29,12 +29,12 @@ class _CardFeedFooterState extends State<CardFeedFooter> {
                  setState(() {
                    like = !like;
                  });
-               }, icon: like ? Icon(Icons.thumb_up_alt) : Icon(Icons.thumb_up_alt_outlined)),
+               }, icon: like ? const Icon(Icons.thumb_up_alt) : const Icon(Icons.thumb_up_alt_outlined)),
               Text(widget.likes.length.toString()),
 
               const SizedBox(width: 10,),
 
-              IconButton(onPressed: (){}, icon: Icon(Icons.message_outlined)),
+              IconButton(onPressed: (){}, icon: const Icon(Icons.message_outlined)),
               Text(widget.comments.length.toString()),
             ],
           ),
