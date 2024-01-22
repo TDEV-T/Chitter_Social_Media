@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chitter/models/PostModel.dart';
+import 'package:chitter/models/UserModel.dart';
 import 'package:chitter/services/dio_config.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:dio/dio.dart';
@@ -180,4 +181,24 @@ class RestAPI {
       throw("Can't  Unlike Post");
     }
   }
+
+  Future<UserModel> GetUserProfileData(int uid) async{
+    try{
+      final resp = await _dioWithAuth.get("users/${uid}");
+
+      if (resp.statusCode == 200){
+        final UserModel usr = userModelFromJson(resp.data);
+
+        return usr;
+      }
+
+      throw ("Can't Get User Data");
+    }on DioException catch(e) {
+      Utility().logger.e(e);
+      throw("Can't  Unlike Post");
+    }
+  }
+
+
+
 }

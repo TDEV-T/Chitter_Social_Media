@@ -1,12 +1,9 @@
 import 'package:chitter/components/feeds/card_feed_footer.dart';
 import 'package:chitter/components/feeds/card_feed_header.dart';
-import 'package:chitter/controller/PostController.dart';
 import 'package:chitter/models/PostModel.dart';
 import 'package:chitter/screens/posts/detail_post.dart';
 import 'package:chitter/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
 import 'card_feed_content.dart';
 
 class CardFeed extends StatelessWidget {
