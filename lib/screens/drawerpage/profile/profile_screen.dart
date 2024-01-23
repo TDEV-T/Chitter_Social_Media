@@ -30,7 +30,7 @@ class _profile_ScreenState extends State<profile_Screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Text("Profile : ${usrController.myself.value.username}"),
+        title: Text("Profile : ${usrController.myself.value.username}"),
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -39,65 +39,67 @@ class _profile_ScreenState extends State<profile_Screen> {
             Get.find<UserController>().fetchMySelf(id);
           });
         },
-        child : Obx(() {
-          var userController = Get.find<UserController>();
-          var user = userController.myself.value;
-          var profilePicture = imageAPI + user.profilePicture.toString();
-          return Column(
-            children: [
-              UserAccountsDrawerHeader(
-                accountName: Text(user.username.toString()),
-                accountEmail: Text(user.email.toString()),
-                currentAccountPicture: CircleAvatar(
-                  backgroundImage: NetworkImage(profilePicture),
-                ),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(imageAPI + user.coverfilePicture!),
-                      fit: BoxFit.cover),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: SingleChildScrollView(
+          child: Obx(() {
+            var userController = Get.find<UserController>();
+            var user = userController.myself.value;
+            var profilePicture = imageAPI + user.profilePicture.toString();
+            return Container(
+              child: Column(
                 children: [
-                  Column(
+                  UserAccountsDrawerHeader(
+                    accountName: Text(user.username.toString()),
+                    accountEmail: Text(user.email.toString()),
+                    currentAccountPicture: CircleAvatar(
+                      backgroundImage: NetworkImage(profilePicture),
+                    ),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: NetworkImage(imageAPI + user.coverfilePicture!),
+                          fit: BoxFit.cover),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('Posts'),
-                      Text(user.posts?.length.toString() ??
-                          "0"),
+                      Column(
+                        children: [
+                          Text('Posts'),
+                          Text(user.posts?.length.toString() ?? "0"),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text('Followers'),
+                          Text(user.followingCount.toString() ?? '0'),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text('Following'),
+                          Text(user.followingCount.toString() ?? '0'),
+                        ],
+                      ),
                     ],
                   ),
-                  Column(
-                    children: [
-                      Text('Followers'),
-                      Text(user.followCount.toString() ?? '0'),
-                    ],
+                  ElevatedButton(
+                    onPressed: () {}, // implement follow functionality
+                    child: Text('Follow'),
                   ),
-                  Column(
-                    children: [
-                      Text('Following'),
-                      Text(user.followingCount.toString() ?? '0'),
-                    ],
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: user.posts?.length,
+                    itemBuilder: (context, index) {
+                      return CardFeed(
+                          pml: user.posts![index], refreshKey: refreshKey);
+                    },
                   ),
                 ],
               ),
-              ElevatedButton(
-                onPressed: () {}, // implement follow functionality
-                child: Text('Follow'),
-              ),
-              SingleChildScrollView(
-                child:ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: user.posts?.length,
-                  itemBuilder: (context, index) {
-                    return CardFeed(
-                        pml: user.posts![index], refreshKey: refreshKey);
-                  },
-                ),
-              ),
-            ],
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }
