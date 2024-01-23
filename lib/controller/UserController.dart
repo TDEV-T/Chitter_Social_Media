@@ -18,8 +18,6 @@ class UserController extends GetxController {
    void fetchMySelf(int id) async {
       var usrResult = await RestAPI().getUserById(id);
 
-      Utility().logger.i(usrResult.posts);
-
       if (usrResult != null){
         myself.value = usrResult;
       }

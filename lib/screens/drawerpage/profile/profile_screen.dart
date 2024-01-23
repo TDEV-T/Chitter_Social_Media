@@ -16,50 +16,88 @@ class profile_Screen extends StatefulWidget {
 
 class _profile_ScreenState extends State<profile_Screen> {
   final UserController usrController = Get.put(UserController());
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
+  late int id = 0;
 
   @override
   void initState() {
     super.initState();
-    int id = Utility.getSharedPrefs("userid");
+    id = Utility.getSharedPrefs("userid");
     usrController.fetchMySelf(id);
   }
 
   @override
   Widget build(BuildContext context) {
-    String username = usrController.myself.value.username ?? "";
-    String email = usrController.myself.value.email ?? "";
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
+        title:  Text("Profile : ${usrController.myself.value.username}"),
       ),
-      body: ListView(
-        children: <Widget>[
-          Obx(() {
-            var userController = Get.find<UserController>();
-            var user = userController.myself.value;
-            var profilePicture = imageAPI + user.profilePicture.toString();
-            return UserAccountsDrawerHeader(
-              accountName: Text(user.username.toString()),
-              accountEmail: Text(user.email.toString()),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage(profilePicture),
-              ),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(imageAPI+ user.coverfilePicture!),
-                  fit: BoxFit.cover
+      body: RefreshIndicator(
+        key: refreshKey,
+        onRefresh: () async {
+          setState(() {
+            Get.find<UserController>().fetchMySelf(id);
+          });
+        },
+        child : Obx(() {
+          var userController = Get.find<UserController>();
+          var user = userController.myself.value;
+          var profilePicture = imageAPI + user.profilePicture.toString();
+          return Column(
+            children: [
+              UserAccountsDrawerHeader(
+                accountName: Text(user.username.toString()),
+                accountEmail: Text(user.email.toString()),
+                currentAccountPicture: CircleAvatar(
+                  backgroundImage: NetworkImage(profilePicture),
+                ),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: NetworkImage(imageAPI + user.coverfilePicture!),
+                      fit: BoxFit.cover),
                 ),
               ),
-            );
-          }),
-          ListTile(
-            title: const Text('My posts'),
-            trailing: const Icon(Icons.keyboard_arrow_right),
-            onTap: () {},
-          ),
-
-        ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Text('Posts'),
+                      Text(user.posts?.length.toString() ??
+                          "0"),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text('Followers'),
+                      Text(user.followCount.toString() ?? '0'),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text('Following'),
+                      Text(user.followingCount.toString() ?? '0'),
+                    ],
+                  ),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: () {}, // implement follow functionality
+                child: Text('Follow'),
+              ),
+              SingleChildScrollView(
+                child:ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: user.posts?.length,
+                  itemBuilder: (context, index) {
+                    return CardFeed(
+                        pml: user.posts![index], refreshKey: refreshKey);
+                  },
+                ),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }
