@@ -15,12 +15,14 @@ class PostController extends GetxController{
 
 
 
-  void fetchPostById(int id) async {
+  Future<bool> fetchPostById(int id) async {
     var postResult = await RestAPI().getPostById(id);
 
     if(postResult != null){
       post.value = postResult;
+      return true;
     }
+    return false;
   }
 
   void fetchPosts(String typefeed) async{

@@ -6,6 +6,7 @@ import 'package:chitter/controller/PostController.dart';
 import 'package:chitter/screens/posts/comment_form.dart';
 import 'package:chitter/models/PostModel.dart';
 import 'package:chitter/utils/constants.dart';
+import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/get_core.dart';
@@ -19,10 +20,13 @@ class detail_Post extends StatefulWidget {
 
 class _detail_PostState extends State<detail_Post> {
   final PostController postController = Get.put(PostController());
+  int id = 0;
+  bool statusOwner = false;
 
   @override
   void initState() {
     super.initState();
+    id = Utility.getSharedPrefs("userid");
     postController.fetchPostById(widget.pid);
   }
 
@@ -31,6 +35,10 @@ class _detail_PostState extends State<detail_Post> {
     String profilePath =
         postController.post.value.user?.profilepicture ?? "default.png";
     String profileImage = urlAPI + "images/" + profilePath;
+
+    if(id == postController.post.value.userId){
+      statusOwner = true;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -45,7 +53,10 @@ class _detail_PostState extends State<detail_Post> {
                 CardFeedHeader(
                     username: postController.post.value.user?.username ?? "",
                     fullname: postController.post.value.user?.fullname ?? "",
-                    imgSrc: profileImage),
+                    imgSrc: profileImage,
+                    statusOwner: statusOwner,
+                    pid:postController.post.value.id ?? 0,
+                ),
                 CardFeedContent(
                     text: postController.post.value?.content ?? "",
                     imgSrc: postController.post.value?.image ?? "",

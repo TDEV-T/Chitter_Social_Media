@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:chitter/components/animation/LoadingIndicator.dart';
 import 'package:chitter/components/formWidget/VideoPreview.dart';
 import 'package:chitter/components/formWidget/imagepreview.dart';
-import 'package:chitter/components/formWidget/rounded_button.dart';
 import 'package:chitter/components/formWidget/textfieldpost.dart';
 import 'package:chitter/services/rest_api.dart';
 import 'package:chitter/utils/utils.dart';
@@ -91,7 +90,7 @@ class _CreatePostState extends State<CreatePost> {
           Container(
             margin: const EdgeInsets.all(5),
             child: IconButton(
-                icon: Icon(Icons.check),
+                icon: const Icon(Icons.check),
                 onPressed: () async {
                   if (_formKeyPost.currentState!.validate()) {
                     setState(() {
