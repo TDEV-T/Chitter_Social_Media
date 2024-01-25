@@ -46,7 +46,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                             margin: const EdgeInsets.only(top:5),
                             height: 25,
                             width: 30,
-                            decoration: BoxDecoration(color:Colors.white,shape: BoxShape.circle),
+                            decoration: const BoxDecoration(color:Colors.white,shape: BoxShape.circle),
                             child: IconButton(
                               iconSize: 10,
                               icon: const Icon(
@@ -60,10 +60,10 @@ class _ImagePreviewState extends State<ImagePreview> {
                                     setState(() {
                                       widget.image!.removeAt(index);
 
-                                      if(widget.image!.length < 1){
+                                      if(widget.image!.isEmpty){
                                         widget.mdt = "all";
                                         widget.onPressed();
-                                        Utility().logger.i("MDT Change" + widget.mdt);
+
                                       }
                                     });
                                   }

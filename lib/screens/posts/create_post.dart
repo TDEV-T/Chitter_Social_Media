@@ -81,7 +81,7 @@ class _CreatePostState extends State<CreatePost> {
   @override
   Widget build(BuildContext context) {
 
-    bool _isLoading = false;
+    bool isLoading = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -94,10 +94,10 @@ class _CreatePostState extends State<CreatePost> {
                 onPressed: () async {
                   if (_formKeyPost.currentState!.validate()) {
                     setState(() {
-                      _isLoading = true;
+                      isLoading = true;
                     });
 
-                    var resp = null;
+                    var resp;
                     try {
                       if (mediaType == "picture") {
                         resp = await RestAPI().createPost(content.text, _media);
@@ -122,7 +122,7 @@ class _CreatePostState extends State<CreatePost> {
                           Utility.showSnackBar("Can't Post"));
                     } finally {
                       setState(() {
-                        _isLoading = false;
+                        isLoading = false;
                       });
                     }
                   }
@@ -191,7 +191,7 @@ class _CreatePostState extends State<CreatePost> {
                         onPressed: () async {
                           setState(() {});
                         })
-                    : (mediaType == "video")
+                    : (mediaType == "video" && _video != null)
                         ? VideoPlayerScreen(
                             filePath: _video!.path,
                             onPressed: () async {
@@ -205,7 +205,7 @@ class _CreatePostState extends State<CreatePost> {
               ],
             ),
           ),
-          LoadingIndicator(isLoading: _isLoading)
+          LoadingIndicator(isLoading: isLoading)
           ],
         ),
       ),

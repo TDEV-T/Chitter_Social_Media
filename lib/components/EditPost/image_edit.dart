@@ -1,10 +1,13 @@
 import 'package:chitter/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ImageEditPreview extends StatefulWidget {
-  const ImageEditPreview({Key? key, required this.imageList}) : super(key: key);
+   ImageEditPreview({Key? key, required this.imageList,required this.freelength,required this.onPressed}) : super(key: key);
 
   final List<dynamic> imageList;
+  late  int freelength;
+  final VoidCallback onPressed;
 
   @override
   State<ImageEditPreview> createState() => _ImageEditPreviewState();
@@ -13,7 +16,7 @@ class ImageEditPreview extends StatefulWidget {
 class _ImageEditPreviewState extends State<ImageEditPreview> {
   @override
   Widget build(BuildContext context) {
-    return (widget.imageList.length != 0)
+    return (widget.imageList.isNotEmpty)
         ? Semantics(
             child: GridView.builder(
               shrinkWrap: true,
@@ -38,16 +41,18 @@ class _ImageEditPreviewState extends State<ImageEditPreview> {
                           margin: const EdgeInsets.only(top:5),
                           height: 25,
                           width: 30,
-                          decoration: BoxDecoration(color:Colors.white,shape: BoxShape.circle),
+                          decoration: const BoxDecoration(color:Colors.white,shape: BoxShape.circle),
                           child: IconButton(
                             iconSize: 10,
                             icon: const Icon(
                               Icons.close,
                               color: Colors.black,
                             ),
-                            onPressed: () {
-                              setState(() {
+                            onPressed: (){
+                              setState(()  {
                                 widget.imageList.removeAt(index);
+                                widget.freelength = widget.imageList.length - 4;
+                                widget.onPressed();
                               });
                             },
                           ),

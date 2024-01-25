@@ -28,7 +28,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     if (widget.filePath != null) {
       _controller = VideoPlayerController.file(File(widget.filePath!));
     } else {
-      // Fallback to a default asset if no file path is provided
       _controller = VideoPlayerController.asset('assets/images/video.mp4');
     }
     _controller!.addListener(() {
@@ -71,7 +70,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
               right: 0,
               child: Container(
                 margin: const EdgeInsets.only(top:5),
-                decoration: BoxDecoration(color:Colors.white,shape: BoxShape.circle),
+                decoration: const BoxDecoration(color:Colors.white,shape: BoxShape.circle),
                 child: IconButton(
                   iconSize: 20,
                   icon: const Icon(

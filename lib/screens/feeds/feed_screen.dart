@@ -63,8 +63,6 @@ class _Feed_ScreenState extends State<Feed_Screen> {
         child: const Icon(Icons.add),
       ),
     );
-
-    // return Center(child:Text("Center"));
   }
 
   Widget _listView(List<PostModel> feeds) {
