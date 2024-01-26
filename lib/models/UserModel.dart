@@ -18,6 +18,7 @@ class UserModel {
   List<PostModel>? posts;
   int? followCount;
   int? followingCount;
+  String? statusfollower;
 
   UserModel({
     this.id,
@@ -31,6 +32,7 @@ class UserModel {
     this.posts,
     this.followCount,
     this.followingCount,
+    this.statusfollower,
   });
 
 
@@ -48,6 +50,7 @@ class UserModel {
     posts: json["posts"] == null ? null : List<PostModel>.from(json["posts"].map((x) => PostModel.fromJson(x))),
     followCount: json["follower_count"],
     followingCount : json["following_count"],
+    statusfollower: json["statusfollower"],
   );
 
   Map<String, dynamic> toJson() => {

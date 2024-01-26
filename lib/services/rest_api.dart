@@ -177,7 +177,7 @@ class RestAPI {
     }
   }
 
-    getUserById(int uid) async {
+  getUserById(int uid) async {
     try {
       final resp = await _dioWithAuth.get("users/$uid");
 
@@ -189,14 +189,58 @@ class RestAPI {
     }
   }
 
-  searchFunc(String search) async {
-    try{
-      final resp = await _dioWithAuth.post("search",data:jsonEncode({"search" : search}));
-
-
-    }on DioException catch(e) {
+  Future<String> updatePost(int pid, String content, List<XFile>? imageFiles,
+      String currentImage) async {
+    var formData = FormData();
+    formData.fields.add(MapEntry('imageCurrent', currentImage));
+    formData.fields.add(MapEntry('content', content));
+    if (imageFiles != null && imageFiles.isNotEmpty) {
+      for (var imgfile in imageFiles) {
+        if (imgfile != null) {
+          var multipartFile = await MultipartFile.fromFile(imgfile.path,
+              filename: imgfile.name);
+          formData.files.add(MapEntry('file', multipartFile));
+        }
+      }
+    }
+    try {
+      final resp = await _dioWithAuth.patch('posts/$pid', data: formData);
+      return jsonEncode(resp.data);
+    } on DioException catch (e) {
       Utility().logger.e(e);
-      throw("Can't Get Search Data");
+      throw ("Can't Update Post");
+    }
+  }
+
+  Future<String> updatePostWithVideo(
+      int pid, String content, File? video) async {
+    var formData = FormData();
+
+    formData.fields.add(MapEntry('content', content));
+
+    if (video != null) {
+      var multipartFile = await MultipartFile.fromFile(video.path,
+          filename: video.path.split('/').last);
+      formData.files.add(MapEntry('file', multipartFile));
+      formData.fields.add(const MapEntry('contenttype', 'video'));
+    }
+
+    try {
+      final resp = await _dioWithAuth.patch('posts/$pid', data: formData);
+      return jsonEncode(resp.data);
+    } on DioException catch (e) {
+      Utility().logger.e(e);
+      throw ("Can't Post");
+    }
+  }
+
+  searchFunc(String search) async {
+    try {
+      final resp = await _dioWithAuth.post("search",
+          data: jsonEncode({"search": search}));
+    } on DioException catch (e) {
+      Utility().logger.e(e);
+      throw ("Can't Get Search Data");
     }
   }
 }

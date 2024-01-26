@@ -14,30 +14,33 @@ class cardcomment extends StatefulWidget {
 class _cardcommentState extends State<cardcomment> {
   @override
   Widget build(BuildContext context) {
-      return SingleChildScrollView(
-        child: ListView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: widget.comments.map((comment) {
-            return Column(
-              children: [
-                CardFeedHeader(
-                    username: comment.user!.username ?? "",
-                    fullname: comment.user!.fullname ?? "",
-                    imgSrc:
-                        '${imageAPI + comment.user!.profilepicture.toString()}' ??
-                            ""),
-               Align(
-                 alignment: Alignment.topLeft,
-                 child:  Text(comment!.content ?? ""),
-               ),
-                const SizedBox(
-                  height: 10,
-                )
-              ],
-            );
-          }).toList(),
-        ),
-      );
+    return SingleChildScrollView(
+      child: ListView(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: widget.comments.map((comment) {
+          return Column(
+            children: [
+              CardFeedHeader(
+                username: comment.user!.username ?? "",
+                fullname: comment.user!.fullname ?? "",
+                imgSrc:
+                    '${imageAPI + comment.user!.profilepicture.toString()}' ??
+                        "",
+                  statusOwner : false,
+                pid:0,
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(comment!.content ?? ""),
+              ),
+              const SizedBox(
+                height: 10,
+              )
+            ],
+          );
+        }).toList(),
+      ),
+    );
   }
 }
