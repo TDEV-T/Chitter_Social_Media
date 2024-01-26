@@ -1,11 +1,10 @@
-import 'package:chitter/app_router.dart';
 import 'package:chitter/components/drawerWidget/UserAccountShow.dart';
 import 'package:chitter/screens/drawerpage/homepage/homepage_screen.dart';
 import 'package:chitter/screens/drawerpage/message/message_Screen.dart';
 import 'package:chitter/screens/drawerpage/notification/notification_screen.dart';
 import 'package:chitter/screens/drawerpage/profile/profile_screen.dart';
+import 'package:chitter/screens/drawerpage/search/search_screen.dart';
 import 'package:chitter/screens/drawerpage/settings/setting_Screen.dart';
-import 'package:chitter/screens/feeds/feed_screen.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Center(child: Text("Chitter")),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined))
+          IconButton(onPressed: () {
+              Navigator.push(context,MaterialPageRoute(builder:(context) => search_Screen()));
+          }, icon: const Icon(Icons.search_outlined))
         ],
 
       ),

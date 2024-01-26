@@ -27,7 +27,7 @@ void main() async {
   }
 
   runApp(MaterialApp(
-    theme: AppTheme.lightTheme,
+    theme:  AppTheme.lightTheme,
     debugShowCheckedModeBanner: false,
     initialRoute: initialRoute,
     routes: AppRouter.routes,

@@ -177,7 +177,7 @@ class RestAPI {
     }
   }
 
-  Future<UserModel> getUserById(int uid) async {
+    getUserById(int uid) async {
     try {
       final resp = await _dioWithAuth.get("users/$uid");
 
@@ -186,6 +186,17 @@ class RestAPI {
     } on DioException catch (e) {
       Utility().logger.e(e);
       throw ("Can't Get user Data");
+    }
+  }
+
+  searchFunc(String search) async {
+    try{
+      final resp = await _dioWithAuth.post("search",data:jsonEncode({"search" : search}));
+
+
+    }on DioException catch(e) {
+      Utility().logger.e(e);
+      throw("Can't Get Search Data");
     }
   }
 }
