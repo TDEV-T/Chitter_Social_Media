@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chitter/models/PostModel.dart';
+import 'package:chitter/models/SearchModel.dart';
 import 'package:chitter/models/UserModel.dart';
 import 'package:chitter/services/dio_config.dart';
 import 'package:chitter/utils/utils.dart';
@@ -238,6 +239,12 @@ class RestAPI {
     try {
       final resp = await _dioWithAuth.post("search",
           data: jsonEncode({"search": search}));
+
+      if (resp.statusCode == 200){
+        final searchModel = SearchModel.fromJson(resp.data);
+        Utility().logger.i(resp.data);
+        return searchModel;
+      }
     } on DioException catch (e) {
       Utility().logger.e(e);
       throw ("Can't Get Search Data");

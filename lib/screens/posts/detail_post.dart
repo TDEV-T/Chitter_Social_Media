@@ -9,7 +9,6 @@ import 'package:chitter/utils/constants.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
 
 class detail_Post extends StatefulWidget {
   const detail_Post({Key? key, required this.pid}) : super(key: key);
