@@ -68,7 +68,6 @@ class RestAPI {
             "authtoken": data,
           }));
 
-      Utility().logger.i(resp.data);
       return jsonEncode(resp.data);
     } on DioException catch (e) {
       if (e.response?.data?.containsKey('message')) {

@@ -1,3 +1,4 @@
+import 'package:chitter/app_router.dart';
 import 'package:chitter/components/drawerWidget/UserAccountShow.dart';
 import 'package:chitter/screens/drawerpage/homepage/homepage_screen.dart';
 import 'package:chitter/screens/drawerpage/message/message_Screen.dart';
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     _getUserFuture = getUserInfo();
   }
 
@@ -121,6 +123,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 const ListTile(
                   leading: Icon(Icons.message_outlined),
                   title: Text("Messaging"),
+                ),
+                ListTile(
+                  leading: Icon(Icons.logout_outlined),
+                  title:Text("Logout"),
+                  onTap: () async {
+                    Utility.clearSharedPrefs();
+                    Navigator.pushNamedAndRemoveUntil(context, AppRouter.login, (route) => false);
+                  },
                 )
               ],
             )
