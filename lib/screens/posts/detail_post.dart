@@ -35,7 +35,7 @@ class _detail_PostState extends State<detail_Post> {
         postController.post.value.user?.profilepicture ?? "default.png";
     String profileImage = urlAPI + "images/" + profilePath;
 
-    if(id == postController.post.value.userId){
+    if (id == postController.post.value.userId) {
       statusOwner = true;
     }
 
@@ -50,11 +50,12 @@ class _detail_PostState extends State<detail_Post> {
             child: Column(
               children: [
                 CardFeedHeader(
-                    username: postController.post.value.user?.username ?? "",
-                    fullname: postController.post.value.user?.fullname ?? "",
-                    imgSrc: profileImage,
-                    statusOwner: statusOwner,
-                    pid:postController.post.value.id ?? 0,
+                  username: postController.post.value.user?.username ?? "",
+                  fullname: postController.post.value.user?.fullname ?? "",
+                  uid: postController.post.value.user?.id ?? 0,
+                  imgSrc: profileImage,
+                  statusOwner: statusOwner,
+                  pid: postController.post.value.id ?? 0,
                 ),
                 CardFeedContent(
                     text: postController.post.value?.content ?? "",
@@ -66,7 +67,8 @@ class _detail_PostState extends State<detail_Post> {
                     date: postController.post.value?.createdAt ??
                         DateTime.timestamp(),
                     refreshKey: null,
-                    onTap: () {},pid:postController.post.value?.id ?? 0),
+                    onTap: () {},
+                    pid: postController.post.value?.id ?? 0),
                 cardcomment(
                     comments: postController.post.value?.comments ?? []),
                 CommentForm(pid: postController.post.value?.id ?? 0),

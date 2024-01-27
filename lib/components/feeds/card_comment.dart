@@ -22,6 +22,7 @@ class _cardcommentState extends State<cardcomment> {
           return Column(
             children: [
               CardFeedHeader(
+                uid: comment.user!.id  ?? 0,
                 username: comment.user!.username ?? "",
                 fullname: comment.user!.fullname ?? "",
                 imgSrc:

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:chitter/models/PostModel.dart';
@@ -66,6 +67,8 @@ class RestAPI {
           options: Options(headers: {
             "authtoken": data,
           }));
+
+      Utility().logger.i(resp.data);
       return jsonEncode(resp.data);
     } on DioException catch (e) {
       if (e.response?.data?.containsKey('message')) {
@@ -240,7 +243,7 @@ class RestAPI {
       final resp = await _dioWithAuth.post("search",
           data: jsonEncode({"search": search}));
 
-      if (resp.statusCode == 200){
+      if (resp.statusCode == 200) {
         final searchModel = SearchModel.fromJson(resp.data);
         Utility().logger.i(resp.data);
         return searchModel;
@@ -248,6 +251,44 @@ class RestAPI {
     } on DioException catch (e) {
       Utility().logger.e(e);
       throw ("Can't Get Search Data");
+    }
+  }
+
+  Future<bool> sendFollowRequest(int uid,String type) async {
+    try{
+      late Response resp;
+      switch (type){
+        case "req" :
+          resp = await _dioWithAuth.post("follow/req",data:{
+            "following":uid,
+          });
+          break;
+        case "unfol" :
+           resp = await _dioWithAuth.delete("follow/unfollow",data:{
+            "following":uid,
+          });
+
+        case "submit":
+          resp = await _dioWithAuth.post("follow/accept",data:{
+            "follower":uid
+          });
+
+        default :
+          resp = await _dioWithAuth.post("follow/req",data:{
+            "following":uid,
+          });
+      }
+
+      if (resp.statusCode == 200){
+        Utility().logger.i(resp.data);
+        return true;
+      }
+
+      return false;
+
+    }on DioException catch (e){
+      Utility().logger.e(e);
+      throw ("Can't Send Follow Request");
     }
   }
 }

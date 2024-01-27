@@ -25,11 +25,12 @@ class _Feed_ScreenState extends State<Feed_Screen> {
   @override
   void initState(){
     super.initState();
-
+    fetchPostData();
   }
 
-
-
+  fetchPostData() async {
+    await Get.find<PostController>().fetchPosts(widget.typefeed);
+  }
 
 
   @override

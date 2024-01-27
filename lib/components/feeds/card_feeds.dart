@@ -52,7 +52,7 @@ class _CardFeedState extends State<CardFeed> {
         },
         child: Column(
           children: [
-            CardFeedHeader(username: widget.pml.user?.username ?? "", fullname: widget.pml.user?.fullname ?? "", imgSrc: profileImage, statusOwner :statusOwner,pid:widget.pml?.id ?? 0),
+            CardFeedHeader(username: widget.pml.user?.username ?? "", fullname: widget.pml.user?.fullname ?? "", imgSrc: profileImage,uid: widget.pml.user?.id ?? 0, statusOwner :statusOwner,pid:widget.pml?.id ?? 0),
             CardFeedContent(text: widget.pml?.content ?? "", imgSrc: widget.pml?.image ?? "",mdt:widget.pml?.contenttype ?? "picture"),
             CardFeedFooter(comments: widget.pml?.comments ?? [], likes: widget.pml?.likes ?? [],date:widget.pml?.createdAt ?? DateTime.timestamp(),refreshKey: widget.refreshKey , onTap:() {
               Navigator.push(context,MaterialPageRoute(builder:(context) => detail_Post(pid:widget.pml?.id ?? 0))).then((_) => {

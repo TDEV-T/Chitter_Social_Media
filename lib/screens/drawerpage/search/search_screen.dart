@@ -78,7 +78,7 @@ class _search_Screen extends State<search_Screen> {
                   margin: const EdgeInsets.all(10),
                   child: const Text("Post Found : "),
                 ),
-                Container(
+                Expanded(
                   child: ListView.builder(
                     shrinkWrap: true,
                     itemCount:

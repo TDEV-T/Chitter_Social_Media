@@ -5,6 +5,7 @@ import 'package:chitter/screens/drawerpage/notification/notification_screen.dart
 import 'package:chitter/screens/drawerpage/profile/profile_screen.dart';
 import 'package:chitter/screens/drawerpage/search/search_screen.dart';
 import 'package:chitter/screens/drawerpage/settings/setting_Screen.dart';
+import 'package:chitter/utils/constants.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String? username;
   String? email;
+  String? imgSrc;
   Future? _getUserFuture;
 
   @override
@@ -30,17 +32,19 @@ class _HomeScreenState extends State<HomeScreen> {
     await Utility.initSharedPrefs();
     username = await Utility.getSharedPrefs("username");
     email = await Utility.getSharedPrefs("email");
+    imgSrc = await Utility.getSharedPrefs("profile");
     return true;
   }
 
   int _currentIndex = 0;
 
   final List<Widget> _children = [
-    homepage__Screen(),
-    profile_Screen(),
-    notification_Screen(),
-    setting_Screen(),
-    message_Screen()
+    const homepage__Screen(),
+    const profile_Screen(),
+    const notification_Screen(),
+    const setting_Screen(),
+    const search_Screen(),
+    const message_Screen()
   ];
 
   void onDrawerChange(int index) {
@@ -80,8 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (snapshot.hasData) {
                         return UserAccountShow(
                             username: username ?? "",
-                            imgSrc:
-                                "https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg");
+                            imgSrc: "${imageAPI + imgSrc!}" ?? "");
                       } else {
                         return const CircularProgressIndicator();
                       }
@@ -108,9 +111,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: Icon(Icons.settings_outlined),
                   title: Text("Settings"),
                 ),
-                const ListTile(
+                ListTile(
                   leading: Icon(Icons.search_outlined),
                   title: Text("Search"),
+                  onTap: (){
+                    onDrawerChange(4);
+                  },
                 ),
                 const ListTile(
                   leading: Icon(Icons.message_outlined),

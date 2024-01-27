@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:chitter/models/SearchModel.dart';
 import 'package:chitter/models/UserModel.dart';
+import 'package:chitter/screens/profile/profile_screen.dart';
 import 'package:chitter/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -45,8 +46,8 @@ class _search_HeaderState extends State<search_Header> {
             ],
           ),
           IconButton(
-            onPressed: () {
-
+            onPressed: () async {
+              Navigator.push(context,MaterialPageRoute(builder: (context) => profile_Screen_View(uid: widget.usrData?.id ?? 0)));
             },
             icon: const Icon(Icons.arrow_forward_ios),
           ),

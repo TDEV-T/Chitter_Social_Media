@@ -98,11 +98,7 @@ class LoginForm extends StatelessWidget {
 
                                   if(body['message'] == "Login Successfully"){
                                     if(body['token'] != null || body['token'] != ""){
-                                      await Utility.initSharedPrefs();
-                                      Utility.setSharedPrefs("token", body['token']);
-                                      Utility.setSharedPrefs("username", body['username']);
-                                      Utility.setSharedPrefs("userid", body['userid']);
-                                      Utility.setSharedPrefs("email", body['useremail']);
+
 
                                       Navigator.pushAndRemoveUntil(
                                         context,
