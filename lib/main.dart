@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chitter/app_router.dart';
 import 'package:chitter/services/rest_api.dart';
 import 'package:chitter/themes/styles.dart';
@@ -18,8 +20,12 @@ void main() async {
     try{
       var resp = await RestAPI().CurUser(token);
 
-      if (resp != null && resp.status) {
-        initialRoute = AppRouter.home;
+      if (resp != null) {
+        var decoded = jsonDecode(resp);
+        Utility().logger.i(decoded);
+        if (decoded["status"]){
+          initialRoute = AppRouter.home;
+        }
       }
     }catch(e){
       Utility().logger.e(e);

@@ -120,9 +120,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     onDrawerChange(4);
                   },
                 ),
-                const ListTile(
+                 ListTile(
                   leading: Icon(Icons.message_outlined),
                   title: Text("Messaging"),
+                   onTap:() async {
+                    onDrawerChange(5);
+                   }
                 ),
                 ListTile(
                   leading: Icon(Icons.logout_outlined),
