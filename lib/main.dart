@@ -19,7 +19,6 @@ void main() async {
   if (token != null) {
     try{
       var resp = await RestAPI().CurUser(token);
-
       if (resp != null) {
         var decoded = jsonDecode(resp);
         Utility().logger.i(decoded);

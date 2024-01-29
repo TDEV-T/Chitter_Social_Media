@@ -21,12 +21,12 @@ class _HomeScreenState extends State<HomeScreen> {
   String? username;
   String? email;
   String? imgSrc;
+  String? token;
   Future? _getUserFuture;
 
   @override
   void initState() {
     super.initState();
-
     _getUserFuture = getUserInfo();
   }
 
@@ -35,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     username = await Utility.getSharedPrefs("username");
     email = await Utility.getSharedPrefs("email");
     imgSrc = await Utility.getSharedPrefs("profile");
+    token = await Utility.getSharedPrefs("token");
     return true;
   }
 
@@ -86,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (snapshot.hasData) {
                         return UserAccountShow(
                             username: username ?? "",
-                            imgSrc: "${imageAPI + imgSrc!}" ?? "");
+                            imgSrc: imageAPI+imgSrc! ?? "default.png");
                       } else {
                         return const CircularProgressIndicator();
                       }

@@ -1,4 +1,5 @@
-const location = "192.168.1.4:8080";
+// const location = "192.168.1.4:8080";
+const location = "192.168.18.226:8080";
 
 
 const apiBase = "http://${location}/";
