@@ -30,25 +30,35 @@ class _chat_ScreenState extends State<chat_Screen> {
   @override
   void initState() {
     super.initState();
-    // _streamController = StreamController<List<MessageModel>>.broadcast();
     fetchData();
-
   }
 
   fetchData() async {
     String token = await Utility.getSharedPrefs("token");
     var apiSocket =
         "${websocketAPI}chat?authtoken=${token}&receiverId=${widget.rcid}";
+    Utility().logger.f(apiSocket);
     channel = IOWebSocketChannel.connect(apiSocket);
+    await channel.ready;
     channel.stream.listen((event) {
       var data = jsonDecode(event);
-      MessageAll.add(MessageModel.fromJson(data));
-      _streamController.add(MessageAll);
+      setState(() {
+        MessageAll.add(MessageModel.fromJson(data));
+        _streamController.add(MessageAll);
+      });
     });
     myid = await Utility.getSharedPrefs("userid");
     setState(() {
       isLoading = false;
     });
+  }
+
+  void sendMessage(String message) {
+    channel.sink.add(message);
+
+    MessageAll.add(
+        MessageModel(sender: myid, message: message, rid: widget.rcid));
+    _streamController.add(MessageAll);
   }
 
   @override
@@ -67,18 +77,19 @@ class _chat_ScreenState extends State<chat_Screen> {
                   child: StreamBuilder(
                     stream: _streamController.stream,
                     builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (snapshot.hasData) {
+                      if (snapshot.hasData) {
                         var messageList = snapshot.data as List<MessageModel>;
                         return ListView.builder(
                           shrinkWrap: true,
                           itemCount: messageList.length,
                           itemBuilder: (context, index) {
                             bool curUser = false;
-                            messageList[index].sender == myid ? curUser = true : curUser = false;
+                            messageList[index].sender == myid
+                                ? curUser = true
+                                : curUser = false;
+                            Utility()
+                                .logger
+                                .i("${messageList[index].sender} + ${myid}");
                             return ChatBubble(
                                 message: messageList[index].message ?? "Null",
                                 isCurrentUser: curUser);
@@ -90,7 +101,13 @@ class _chat_ScreenState extends State<chat_Screen> {
                     },
                   ),
                 ),
-                chat_message_input(controller: _textcontroller),
+                chat_message_input(
+                  controller: _textcontroller,
+                  onSubmit: () async {
+                    sendMessage(_textcontroller.text);
+                    _textcontroller.text = "";
+                  },
+                ),
               ],
             ),
     );
