@@ -23,7 +23,7 @@ class _chat_headerState extends State<chat_header> {
       child: GestureDetector(
         onTap: () {
           Utility().logger.i(widget.uid);
-          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => chat_Screen(rcid:widget.uid!)));
+          Navigator.push(context,MaterialPageRoute(builder: (context) => chat_Screen(rcid:widget.uid!)));
         },
         child: Row(
 

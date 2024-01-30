@@ -12,9 +12,8 @@ import 'package:get/get_core/src/get_main.dart';
 
 var refreshKey = GlobalKey<RefreshIndicatorState>();
 
-
 class profile_Screen_View extends StatefulWidget {
-  const profile_Screen_View({Key? key,required this.uid}) : super(key:key);
+  const profile_Screen_View({Key? key, required this.uid}) : super(key: key);
 
   final int uid;
 
@@ -26,13 +25,11 @@ class _profile_ScreenState extends State<profile_Screen_View> {
   final UserController usrController = Get.put(UserController());
   late bool privateStatus = true;
 
-
-
   @override
   void initState() {
     super.initState();
     usrController.fetchMySelf(widget.uid);
-    privateStatus = usrController.myself.value.privateAccount!;
+    privateStatus = usrController.myself.value.privateAccount ?? true;
   }
 
   @override
@@ -55,6 +52,7 @@ class _profile_ScreenState extends State<profile_Screen_View> {
             var profilePicture = imageAPI + user.profilePicture.toString();
             if (user.username != null) {
               return Container(
+                margin: const EdgeInsets.all(10),
                 child: Column(
                   children: [
                     UserAccountsDrawerHeader(
@@ -66,7 +64,7 @@ class _profile_ScreenState extends State<profile_Screen_View> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                             image:
-                            NetworkImage(imageAPI + user.coverfilePicture!),
+                                NetworkImage(imageAPI + user.coverfilePicture!),
                             fit: BoxFit.cover),
                       ),
                     ),
@@ -93,19 +91,27 @@ class _profile_ScreenState extends State<profile_Screen_View> {
                         ),
                       ],
                     ),
-                    _buildFollowButton(user.statusfollower ?? "none",widget.uid),
-                    (privateStatus && (user.statusfollower == "active_send" || user.statusfollower == "active_recei")) || !privateStatus  ?
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: user.posts?.length,
-                      itemBuilder: (context, index) {
-                        return CardFeed(
-                            pml: user.posts![index], refreshKey: refreshKey);
-                      },
-                    ) : Container(
-            child: Center(child: const Text("Account Is Private"),),
-            )
+                    _buildFollowButton(
+                        user.statusfollower ?? "none", widget.uid),
+                    (privateStatus &&
+                                (user.statusfollower == "active_send" ||
+                                    user.statusfollower == "active_recei")) ||
+                            !privateStatus
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: user.posts?.length,
+                            itemBuilder: (context, index) {
+                              return CardFeed(
+                                  pml: user.posts![index],
+                                  refreshKey: refreshKey);
+                            },
+                          )
+                        : Container(
+                            child: Center(
+                              child: const Text("Account Is Private"),
+                            ),
+                          )
                   ],
                 ),
               );
@@ -121,23 +127,23 @@ class _profile_ScreenState extends State<profile_Screen_View> {
   }
 }
 
-Widget _buildFollowButton(String statusfollower,int uid) {
+Widget _buildFollowButton(String statusfollower, int uid) {
   if (statusfollower != "myself") {
     if (statusfollower == "none") {
       return ElevatedButton(
         onPressed: () async {
-            var resp = await RestAPI().sendFollowRequest(uid,"req");
-            if (resp){
-                refreshKey.currentState!.show();
-            }
+          var resp = await RestAPI().sendFollowRequest(uid, "req");
+          if (resp) {
+            refreshKey.currentState!.show();
+          }
         },
         child: const Text('Follow'),
       );
     } else if (statusfollower == "pending_send") {
       return ElevatedButton(
         onPressed: () async {
-          var resp = await RestAPI().sendFollowRequest(uid,"unfol");
-          if (resp){
+          var resp = await RestAPI().sendFollowRequest(uid, "unfol");
+          if (resp) {
             refreshKey.currentState!.show();
           }
         },
@@ -146,8 +152,8 @@ Widget _buildFollowButton(String statusfollower,int uid) {
     } else if (statusfollower == "active_send") {
       return ElevatedButton(
         onPressed: () async {
-          var resp = await RestAPI().sendFollowRequest(uid,"unfol");
-          if (resp){
+          var resp = await RestAPI().sendFollowRequest(uid, "unfol");
+          if (resp) {
             refreshKey.currentState!.show();
           }
         },
@@ -175,4 +181,3 @@ Widget _buildFollowButton(String statusfollower,int uid) {
   }
   return Container();
 }
-
