@@ -61,17 +61,22 @@ class _message_ScreenState extends State<message_Screen> {
                   return Text('Error: ${snapshot.error}');
                 } else if (snapshot.hasData) {
                   var chatAll = snapshot.data as List<Chat>;
-                  return ListView.builder(
-                    itemCount: chatAll.length,
-                    itemBuilder: (context, index) {
-                      return chat_header(
-                        imgProfile:
-                            imageAPI + chatAll[index].members[0].profilepicture,
-                        username: chatAll[index].members[0].username,
-                        uid: chatAll[index].members[0].id,
-                      );
-                    },
-                  );
+                  if (chatAll.length > 0 ){
+                    return ListView.builder(
+                      itemCount: chatAll.length,
+                      itemBuilder: (context, index) {
+                        return chat_header(
+                          imgProfile:
+                          imageAPI + chatAll[index].members[0].profilepicture,
+                          username: chatAll[index].members[0].username,
+                          uid: chatAll[index].members[0].id,
+                        );
+                      },
+                    );
+                  }else {
+                    return Container();
+                  }
+
                 } else {
                   return const Center(child: Text("U dont' have Message"));
                 }

@@ -24,11 +24,17 @@ class profile_Screen_View extends StatefulWidget {
 class _profile_ScreenState extends State<profile_Screen_View> {
   final UserController usrController = Get.put(UserController());
   late bool privateStatus = true;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    usrController.fetchMySelf(widget.uid);
+    fetchData();
+    isLoading = false;
+  }
+
+  fetchData() async {
+    await usrController.fetchMySelf(widget.uid);
     privateStatus = usrController.myself.value.privateAccount ?? true;
   }
 
@@ -38,91 +44,95 @@ class _profile_ScreenState extends State<profile_Screen_View> {
       appBar: AppBar(
         title: Text("Profile : ${usrController.myself.value.username}"),
       ),
-      body: RefreshIndicator(
-        key: refreshKey,
-        onRefresh: () async {
-          setState(() {
-            Get.find<UserController>().fetchMySelf(widget.uid);
-          });
-        },
-        child: SingleChildScrollView(
-          child: Obx(() {
-            var userController = Get.find<UserController>();
-            var user = userController.myself.value;
-            var profilePicture = imageAPI + user.profilePicture.toString();
-            if (user.username != null) {
-              return Container(
-                margin: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    UserAccountsDrawerHeader(
-                      accountName: Text(user.username.toString()),
-                      accountEmail: Text(user.email.toString()),
-                      currentAccountPicture: CircleAvatar(
-                        backgroundImage: NetworkImage(profilePicture),
-                      ),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image:
-                                NetworkImage(imageAPI + user.coverfilePicture!),
-                            fit: BoxFit.cover),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            const Text('Posts'),
-                            Text(user.posts?.length.toString() ?? "0"),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const Text('Followers'),
-                            Text(user.followingCount.toString() ?? '0'),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const Text('Following'),
-                            Text(user.followingCount.toString() ?? '0'),
-                          ],
-                        ),
-                      ],
-                    ),
-                    _buildFollowButton(
-                        user.statusfollower ?? "none", widget.uid),
-                    (privateStatus &&
-                                (user.statusfollower == "active_send" ||
-                                    user.statusfollower == "active_recei")) ||
-                            !privateStatus
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: user.posts?.length,
-                            itemBuilder: (context, index) {
-                              return CardFeed(
-                                  pml: user.posts![index],
-                                  refreshKey: refreshKey);
-                            },
-                          )
-                        : Container(
-                            child: Center(
-                              child: const Text("Account Is Private"),
+      body: isLoading
+          ? const CircularProgressIndicator()
+          : RefreshIndicator(
+              key: refreshKey,
+              onRefresh: () async {
+                setState(() {
+                  Get.find<UserController>().fetchMySelf(widget.uid);
+                });
+              },
+              child: SingleChildScrollView(
+                child: Obx(() {
+                  var userController = Get.find<UserController>();
+                  var user = userController.myself.value;
+                  var profilePicture =
+                      imageAPI + user.profilePicture.toString();
+                  if (user.username != null) {
+                    return Container(
+                      margin: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          UserAccountsDrawerHeader(
+                            accountName: Text(user.username.toString()),
+                            accountEmail: Text(user.email.toString()),
+                            currentAccountPicture: CircleAvatar(
+                              backgroundImage: NetworkImage(profilePicture),
                             ),
-                          )
-                  ],
-                ),
-              );
-            } else {
-              return const LoadingIndicator(
-                isLoading: true,
-              );
-            }
-          }),
-        ),
-      ),
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                      imageAPI + user.coverfilePicture!),
+                                  fit: BoxFit.cover),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: [
+                                  const Text('Posts'),
+                                  Text(user.posts?.length.toString() ?? "0"),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  const Text('Followers'),
+                                  Text(user.followingCount.toString() ?? '0'),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  const Text('Following'),
+                                  Text(user.followingCount.toString() ?? '0'),
+                                ],
+                              ),
+                            ],
+                          ),
+                          _buildFollowButton(
+                              user.statusfollower ?? "none", widget.uid),
+                          (privateStatus &&
+                                      (user.statusfollower == "active_send" ||
+                                          user.statusfollower ==
+                                              "active_recei")) ||
+                                  !privateStatus
+                              ? ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: user.posts?.length,
+                                  itemBuilder: (context, index) {
+                                    return CardFeed(
+                                        pml: user.posts![index],
+                                        refreshKey: refreshKey);
+                                  },
+                                )
+                              : Container(
+                                  child: Center(
+                                    child: const Text("Account Is Private"),
+                                  ),
+                                )
+                        ],
+                      ),
+                    );
+                  } else {
+                    return const LoadingIndicator(
+                      isLoading: true,
+                    );
+                  }
+                }),
+              ),
+            ),
     );
   }
 }
@@ -161,13 +171,24 @@ Widget _buildFollowButton(String statusfollower, int uid) {
       );
     } else if (statusfollower == "pending_recei") {
       return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async  {
+              var resp = await RestAPI().sendFollowRequest(uid, "submit");
+              if (resp) {
+                refreshKey.currentState!.show();
+              }
+            },
             child: const Text('Accept'),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              var resp = await RestAPI().sendFollowRequest(uid, "reject");
+              if (resp) {
+                refreshKey.currentState!.show();
+              }
+            },
             child: const Text('Reject'),
           ),
         ],

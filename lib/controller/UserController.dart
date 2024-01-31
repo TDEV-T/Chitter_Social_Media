@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:chitter/services/rest_api.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:get/get.dart';
@@ -15,12 +17,15 @@ class UserController extends GetxController {
     fetchMySelf(id);
   }
   
-   void fetchMySelf(int id) async {
+   Future<bool> fetchMySelf(int id) async {
       var usrResult = await RestAPI().getUserById(id);
 
       if (usrResult != null){
         myself.value = usrResult;
+        return true;
       }
+
+      return false;
    }
   
 }

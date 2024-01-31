@@ -266,11 +266,12 @@ class RestAPI {
            resp = await _dioWithAuth.delete("follow/unfollow",data:{
             "following":uid,
           });
-
-        case "submit":
-          resp = await _dioWithAuth.post("follow/accept",data:{
-            "follower":uid
+        case "reject":
+          resp = await _dioWithAuth.delete("follow/reject",data:{
+            "follower" : uid,
           });
+        case "submit":
+          resp = await _dioWithAuth.post("follow/accept/$uid");
 
         default :
           resp = await _dioWithAuth.post("follow/req",data:{
