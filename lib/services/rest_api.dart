@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:chitter/models/FollowModel.dart';
 import 'package:chitter/models/PostModel.dart';
 import 'package:chitter/models/SearchModel.dart';
 import 'package:chitter/models/UserModel.dart';
@@ -291,4 +292,23 @@ class RestAPI {
       throw ("Can't Send Follow Request");
     }
   }
+
+  Future<FollowModel> GetFollow() async {
+    try{
+      Response resp = await _dioWithAuth.get("follow");
+
+      if (resp.statusCode == 200){
+        final FollowModel FollowList = FollowModel.fromJson(resp.data);
+        return FollowList;
+      }
+
+      throw Exception("Failed to Get Follow Request");
+    }on DioException catch(e){
+      Utility().logger.e(e);
+      throw ("Can't Get Follow");
+    }
+  }
+
+
+
 }

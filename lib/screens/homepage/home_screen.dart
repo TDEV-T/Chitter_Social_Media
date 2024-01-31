@@ -106,9 +106,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     onDrawerChange(1);
                   },
                 ),
-                const ListTile(
+                 ListTile(
                   leading: Icon(Icons.notifications_active_outlined),
                   title: Text("Notifications"),
+                   onTap: (){
+                    onDrawerChange(2);
+                   },
                 ),
                 const ListTile(
                   leading: Icon(Icons.settings_outlined),
