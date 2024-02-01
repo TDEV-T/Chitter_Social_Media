@@ -25,7 +25,11 @@ class _profile_ScreenState extends State<profile_Screen> {
   void initState() {
     super.initState();
     id = Utility.getSharedPrefs("userid");
-    usrController.fetchMySelf(id);
+    fetchData();
+  }
+
+  fetchData() async{
+    await usrController.fetchMySelf(id);
   }
 
   @override
