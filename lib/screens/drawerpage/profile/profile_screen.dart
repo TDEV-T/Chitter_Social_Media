@@ -3,6 +3,7 @@ import 'package:chitter/components/feeds/card_feeds.dart';
 import 'package:chitter/controller/UserController.dart';
 import 'package:chitter/models/PostModel.dart';
 import 'package:chitter/models/UserModel.dart';
+import 'package:chitter/screens/drawerpage/profile/editprofile_screen.dart';
 import 'package:chitter/utils/constants.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _profile_ScreenState extends State<profile_Screen> {
   final UserController usrController = Get.put(UserController());
   var refreshKey = GlobalKey<RefreshIndicatorState>();
   late int id = 0;
+  late bool _isLoading = true;
 
   @override
   void initState() {
@@ -30,6 +32,12 @@ class _profile_ScreenState extends State<profile_Screen> {
 
   fetchData() async{
     await usrController.fetchMySelf(id);
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -37,8 +45,15 @@ class _profile_ScreenState extends State<profile_Screen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Profile : ${usrController.myself.value.username}"),
+        actions: [
+          IconButton(onPressed: () async {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => editProfile_Screen(ProfileData: usrController.myself.value ,)));
+          }, icon: const Icon(Icons.edit))
+        ],
       ),
-      body: RefreshIndicator(
+      body: _isLoading ?
+          Center(child: LoadingIndicator(isLoading: _isLoading),)
+          : RefreshIndicator(
         key: refreshKey,
         onRefresh: () async {
           setState(() {
@@ -63,9 +78,12 @@ class _profile_ScreenState extends State<profile_Screen> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                             image:
-                                NetworkImage(imageAPI + user.coverfilePicture!),
+                            NetworkImage(imageAPI + user.coverfilePicture!),
                             fit: BoxFit.cover),
                       ),
+                      onDetailsPressed: (){
+
+                      },
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -109,7 +127,7 @@ class _profile_ScreenState extends State<profile_Screen> {
             }
           }),
         ),
-      ),
+      )
     );
   }
 }

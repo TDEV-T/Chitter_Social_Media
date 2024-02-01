@@ -309,6 +309,22 @@ class RestAPI {
     }
   }
 
+  updateInformation(data) async {
+    Response resp;
+    try{
+      resp = await _dioWithAuth.patch("user/updateinfo",data: data);
+
+      if(resp.statusCode == 200){
+        return jsonEncode(resp.data);
+      }
+
+      throw ("Can't Update Data");
+    }on DioException catch(e){
+      Utility().logger.e(e);
+      throw ("Can't Update Data");
+    }
+  }
+
 
 
 }
