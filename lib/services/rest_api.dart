@@ -254,77 +254,94 @@ class RestAPI {
     }
   }
 
-  Future<bool> sendFollowRequest(int uid,String type) async {
-    try{
+  Future<bool> sendFollowRequest(int uid, String type) async {
+    try {
       late Response resp;
-      switch (type){
-        case "req" :
-          resp = await _dioWithAuth.post("follow/req",data:{
-            "following":uid,
+      switch (type) {
+        case "req":
+          resp = await _dioWithAuth.post("follow/req", data: {
+            "following": uid,
           });
           break;
-        case "unfol" :
-           resp = await _dioWithAuth.delete("follow/unfollow",data:{
-            "following":uid,
+        case "unfol":
+          resp = await _dioWithAuth.delete("follow/unfollow", data: {
+            "following": uid,
           });
         case "reject":
-          resp = await _dioWithAuth.delete("follow/reject",data:{
-            "follower" : uid,
+          resp = await _dioWithAuth.delete("follow/reject", data: {
+            "follower": uid,
           });
         case "submit":
           resp = await _dioWithAuth.post("follow/accept/$uid");
 
-        default :
-          resp = await _dioWithAuth.post("follow/req",data:{
-            "following":uid,
+        default:
+          resp = await _dioWithAuth.post("follow/req", data: {
+            "following": uid,
           });
       }
 
-      if (resp.statusCode == 200){
+      if (resp.statusCode == 200) {
         Utility().logger.i(resp.data);
         return true;
       }
 
       return false;
-
-    }on DioException catch (e){
+    } on DioException catch (e) {
       Utility().logger.e(e);
       throw ("Can't Send Follow Request");
     }
   }
 
   Future<FollowModel> GetFollow() async {
-    try{
+    try {
       Response resp = await _dioWithAuth.get("follow");
 
-      if (resp.statusCode == 200){
+      if (resp.statusCode == 200) {
         final FollowModel FollowList = FollowModel.fromJson(resp.data);
         return FollowList;
       }
 
       throw Exception("Failed to Get Follow Request");
-    }on DioException catch(e){
+    } on DioException catch (e) {
       Utility().logger.e(e);
       throw ("Can't Get Follow");
     }
   }
 
-  updateInformation(data) async {
-    Response resp;
-    try{
-      resp = await _dioWithAuth.patch("user/updateinfo",data: data);
+  updateInformation(String fullname, String bio, String email, bool private,
+      XFile? profile, XFile? cover, String oldImage, String oldCover,String uid) async {
+    var formData = FormData();
 
-      if(resp.statusCode == 200){
+    formData.fields.add(MapEntry('fullname', fullname));
+    formData.fields.add(MapEntry('bio', bio));
+    formData.fields.add(MapEntry('email', email));
+    formData.fields.add(MapEntry('privatestatus', private.toString()));
+    formData.fields.add(MapEntry('oldImage', oldImage));
+    formData.fields.add(MapEntry('oldClover', oldCover));
+
+    if (profile != null) {
+      var multipartFile =
+          await MultipartFile.fromFile(profile.path, filename: profile.name);
+      formData.files.add(MapEntry('profilepicture', multipartFile));
+    }
+
+    if (cover != null) {
+      var multipartFile =
+          await MultipartFile.fromFile(cover.path, filename: cover.name);
+      formData.files.add(MapEntry('coverpicture', multipartFile));
+    }
+
+    try {
+      Response resp = await _dioWithAuth.put("users/$uid", data: formData);
+
+      if (resp.statusCode == 200) {
         return jsonEncode(resp.data);
       }
 
       throw ("Can't Update Data");
-    }on DioException catch(e){
+    } on DioException catch (e) {
       Utility().logger.e(e);
       throw ("Can't Update Data");
     }
   }
-
-
-
 }
