@@ -92,6 +92,7 @@ class _edit_informationState extends State<edit_information> {
                   },
                   keyboardType: TextInputType.text,
                   enableStatus: false,
+                  isPassword: false,
                 ),
                 custom_TextField(
                   label: 'Name',
@@ -104,6 +105,8 @@ class _edit_informationState extends State<edit_information> {
                   },
                   keyboardType: TextInputType.text,
                   enableStatus: true,
+
+                  isPassword: false,
                 ),
                 custom_TextField(
                   label: 'Email',
@@ -116,6 +119,7 @@ class _edit_informationState extends State<edit_information> {
                   },
                   keyboardType: TextInputType.text,
                   enableStatus: true,
+                  isPassword: false,
                 ),
                 custom_TextField(
                   label: 'Bio',
@@ -125,15 +129,14 @@ class _edit_informationState extends State<edit_information> {
                   },
                   keyboardType: TextInputType.text,
                   enableStatus: true,
+                  isPassword: false,
                 ),
                 custom_Switch(
                     label: 'Private Account ',
                     value: privateAccount,
                     onChanged: (value) {
                       setState(() {
-
                         privateAccount = value;
-                        Utility().logger.i(privateAccount);
                       });
                     }),
                 Row(
@@ -167,8 +170,11 @@ class _edit_informationState extends State<edit_information> {
                             widget.usrData!.id.toString()
                         );
 
+                        var body = jsonDecode(resp);
+                        if (body['message'] != ""){
 
-                        Utility().logger.i(jsonDecode(resp));
+                          Navigator.pop(context);
+                        }
                       }
                     },
                     child: const Text('Confirm'))

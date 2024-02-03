@@ -30,7 +30,7 @@ class _profile_ScreenState extends State<profile_Screen> {
     fetchData();
   }
 
-  fetchData() async{
+  fetchData() async {
     await usrController.fetchMySelf(id);
 
     await Future.delayed(const Duration(seconds: 2));
@@ -43,92 +43,103 @@ class _profile_ScreenState extends State<profile_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Profile : ${usrController.myself.value.username}"),
-        actions: [
-          IconButton(onPressed: () async {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => editProfile_Screen(ProfileData: usrController.myself.value ,)));
-          }, icon: const Icon(Icons.edit))
-        ],
-      ),
-      body: _isLoading ?
-          Center(child: LoadingIndicator(isLoading: _isLoading),)
-          : RefreshIndicator(
-        key: refreshKey,
-        onRefresh: () async {
-          setState(() {
-            Get.find<UserController>().fetchMySelf(id);
-          });
-        },
-        child: SingleChildScrollView(
-          child: Obx(() {
-            var userController = Get.find<UserController>();
-            var user = userController.myself.value;
-            var profilePicture = imageAPI + user.profilePicture.toString();
-            if (user.username != null) {
-              return Container(
-                child: Column(
-                  children: [
-                    UserAccountsDrawerHeader(
-                      accountName: Text(user.username.toString()),
-                      accountEmail: Text(user.email.toString()),
-                      currentAccountPicture: CircleAvatar(
-                        backgroundImage: NetworkImage(profilePicture),
+        appBar: AppBar(
+          title: Text("Profile : ${usrController.myself.value.username}"),
+          actions: [
+            IconButton(
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => editProfile_Screen(
+                        ProfileData: usrController.myself.value,
                       ),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image:
-                            NetworkImage(imageAPI + user.coverfilePicture!),
-                            fit: BoxFit.cover),
-                      ),
-                      onDetailsPressed: (){
-
-                      },
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            const Text('Posts'),
-                            Text(user.posts?.length.toString() ?? "0"),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const Text('Followers'),
-                            Text(user.followingCount.toString() ?? '0'),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const Text('Following'),
-                            Text(user.followingCount.toString() ?? '0'),
-                          ],
-                        ),
-                      ],
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: user.posts?.length,
-                      itemBuilder: (context, index) {
-                        return CardFeed(
-                            pml: user.posts![index], refreshKey: refreshKey);
-                      },
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return const LoadingIndicator(
-                isLoading: true,
-              );
-            }
-          }),
+                  ).then((value){
+                    refreshKey.currentState!.show();
+                  });
+                },
+                icon: const Icon(Icons.edit))
+          ],
         ),
-      )
-    );
+        body: _isLoading
+            ? Center(
+                child: LoadingIndicator(isLoading: _isLoading),
+              )
+            : RefreshIndicator(
+                key: refreshKey,
+                onRefresh: () async {
+                  setState(() {
+                    Get.find<UserController>().fetchMySelf(id);
+                  });
+                },
+                child: SingleChildScrollView(
+                  child: Obx(() {
+                    var userController = Get.find<UserController>();
+                    var user = userController.myself.value;
+                    var profilePicture =
+                        imageAPI + user.profilePicture.toString();
+                    if (user.username != null) {
+                      return Container(
+                        child: Column(
+                          children: [
+                            UserAccountsDrawerHeader(
+                              accountName: Text(user.username.toString()),
+                              accountEmail: Text(user.email.toString()),
+                              currentAccountPicture: CircleAvatar(
+                                backgroundImage: NetworkImage(profilePicture),
+                              ),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        imageAPI + user.coverfilePicture!),
+                                    fit: BoxFit.cover),
+                              ),
+                              onDetailsPressed: () {},
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Column(
+                                  children: [
+                                    const Text('Posts'),
+                                    Text(user.posts?.length.toString() ?? "0"),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    const Text('Followers'),
+                                    Text(user.followingCount.toString() ?? '0'),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    const Text('Following'),
+                                    Text(user.followingCount.toString() ?? '0'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: user.posts?.length,
+                              itemBuilder: (context, index) {
+                                return CardFeed(
+                                    pml: user.posts![index],
+                                    refreshKey: refreshKey);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return const LoadingIndicator(
+                        isLoading: true,
+                      );
+                    }
+                  }),
+                ),
+              ));
   }
 }
-

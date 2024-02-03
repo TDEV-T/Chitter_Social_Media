@@ -308,8 +308,16 @@ class RestAPI {
     }
   }
 
-  updateInformation(String fullname, String bio, String email, bool private,
-      XFile? profile, XFile? cover, String oldImage, String oldCover,String uid) async {
+  updateInformation(
+      String fullname,
+      String bio,
+      String email,
+      bool private,
+      XFile? profile,
+      XFile? cover,
+      String oldImage,
+      String oldCover,
+      String uid) async {
     var formData = FormData();
 
     formData.fields.add(MapEntry('fullname', fullname));
@@ -342,6 +350,21 @@ class RestAPI {
     } on DioException catch (e) {
       Utility().logger.e(e);
       throw ("Can't Update Data");
+    }
+  }
+
+  updatePassword(String curPass, String newPass) async {
+    try {
+      Response resp = await _dioWithAuth.post("users/changepassword",
+          data: jsonEncode({"password_cur": curPass, "password_new": newPass}));
+
+      if (resp.statusCode == 200){
+        return resp.data;
+      }
+      throw ("Can't Update Password");
+    } on DioException catch (e) {
+      Utility().logger.e(e);
+      throw ("Can't Update Password");
     }
   }
 }
