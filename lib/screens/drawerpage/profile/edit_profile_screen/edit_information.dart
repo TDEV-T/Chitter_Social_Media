@@ -112,9 +112,7 @@ class _edit_informationState extends State<edit_information> {
                 ElevatedButton(onPressed: ()async{
                   if(_formKeyInformation.currentState!.validate()){
                     Utility().logger.i("Submit");
-                    var resp = await RestAPI().updateInformation(jsonEncode({
-                      ""
-                    }));
+                    // var resp = await RestAPI().updateInformation();
                   }
                 }, child: const Text('Confirm'))
               ],
