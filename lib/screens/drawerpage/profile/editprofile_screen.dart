@@ -1,5 +1,6 @@
 import 'package:chitter/models/UserModel.dart';
 import 'package:chitter/screens/drawerpage/profile/edit_profile_screen/edit_information.dart';
+import 'package:chitter/screens/drawerpage/profile/edit_profile_screen/edit_password.dart';
 import 'package:flutter/material.dart';
 
 class editProfile_Screen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _editProfile_ScreenState extends State<editProfile_Screen>
         controller: _tabController,
         children:  [
           edit_information(usrData: widget.ProfileData,),
-          Center(child: Text("Password")),
+          edit_Password(),
         ],
       ),
     );

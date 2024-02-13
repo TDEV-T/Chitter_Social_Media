@@ -44,7 +44,7 @@ class _CreatePostState extends State<CreatePost> {
   }
 
   Future<void> _pickImage() async {
-    final List<XFile>? selectImage = await _picker.pickMultiImage();
+    final List<XFile> selectImage = await _picker.pickMultiImage();
     setState(() {
       if (_media != null) {
         _media?.addAll(selectImage!.take(4 - _media!.length));

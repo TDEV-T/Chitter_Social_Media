@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:chitter/components/EditProfile/customSwitch.dart';
 import 'package:chitter/components/EditProfile/customTextField.dart';
@@ -7,6 +8,7 @@ import 'package:chitter/services/rest_api.dart';
 import 'package:chitter/utils/constants.dart';
 import 'package:chitter/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class edit_information extends StatefulWidget {
   const edit_information({Key? key, required this.usrData}) : super(key: key);
@@ -25,6 +27,28 @@ class _edit_informationState extends State<edit_information> {
   final _formKeyInformation = GlobalKey<FormState>();
   bool privateAccount = false;
 
+  final ImagePicker _picker = ImagePicker();
+  XFile? _profile;
+  XFile? _cover;
+
+  Future<void> _pickImageProfile() async {
+    final XFile? selectedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _profile = selectedImage;
+    });
+  }
+
+  Future<void> _pickImageCover() async {
+    final XFile? selectedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _cover = selectedImage;
+    });
+  }
+
   @override
   void initState() {
     usernameController.text = widget.usrData!.username!;
@@ -32,7 +56,6 @@ class _edit_informationState extends State<edit_information> {
     emailController.text = widget.usrData!.email!;
     bioController.text = widget.usrData!.bio!;
     privateAccount = widget.usrData!.privateAccount!;
-
   }
 
   @override
@@ -45,17 +68,19 @@ class _edit_informationState extends State<edit_information> {
             key: _formKeyInformation,
             child: Column(
               children: [
-                UserAccountsDrawerHeader( accountName: Text(widget.usrData.username.toString()),
+                UserAccountsDrawerHeader(
+                  accountName: Text(widget.usrData.username.toString()),
                   accountEmail: Text(""),
                   currentAccountPicture: CircleAvatar(
-                    backgroundImage: NetworkImage(imageAPI+widget.usrData.profilePicture.toString()),
-                  ),
+                      backgroundImage: NetworkImage(
+                          imageAPI + widget.usrData.profilePicture.toString())),
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image:
-                        NetworkImage(imageAPI + widget.usrData.coverfilePicture!),
+                        image: NetworkImage(
+                            imageAPI + widget.usrData.coverfilePicture!),
                         fit: BoxFit.cover),
-                  ),),
+                  ),
+                ),
                 custom_TextField(
                   label: 'Username',
                   controller: usernameController,
@@ -67,6 +92,7 @@ class _edit_informationState extends State<edit_information> {
                   },
                   keyboardType: TextInputType.text,
                   enableStatus: false,
+                  isPassword: false,
                 ),
                 custom_TextField(
                   label: 'Name',
@@ -79,6 +105,8 @@ class _edit_informationState extends State<edit_information> {
                   },
                   keyboardType: TextInputType.text,
                   enableStatus: true,
+
+                  isPassword: false,
                 ),
                 custom_TextField(
                   label: 'Email',
@@ -91,6 +119,7 @@ class _edit_informationState extends State<edit_information> {
                   },
                   keyboardType: TextInputType.text,
                   enableStatus: true,
+                  isPassword: false,
                 ),
                 custom_TextField(
                   label: 'Bio',
@@ -100,25 +129,59 @@ class _edit_informationState extends State<edit_information> {
                   },
                   keyboardType: TextInputType.text,
                   enableStatus: true,
+                  isPassword: false,
                 ),
                 custom_Switch(
-                    label: 'PrivateStatus',
+                    label: 'Private Account ',
                     value: privateAccount,
-                    onChanged: (value){
+                    onChanged: (value) {
                       setState(() {
                         privateAccount = value;
                       });
                     }),
-                ElevatedButton(onPressed: ()async{
-                  if(_formKeyInformation.currentState!.validate()){
-                    Utility().logger.i("Submit");
-                    // var resp = await RestAPI().updateInformation();
-                  }
-                }, child: const Text('Confirm'))
+
+                Row(
+                  children: [
+                    const Text("Profile Image "),
+                    ElevatedButton(
+                        onPressed: _pickImageProfile,
+                        child: const Text("Update"))
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text("Cover Image "),
+                    ElevatedButton(
+                        onPressed: _pickImageCover, child: const Text("Update"))
+                  ],
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      if (_formKeyInformation.currentState!.validate()) {
+                        Utility().logger.i("Submit");
+                        var resp = await RestAPI().updateInformation(
+                            fullNameController.text,
+                            bioController.text,
+                            emailController.text,
+                            privateAccount,
+                            _profile,
+                            _cover,
+                            widget.usrData!.profilePicture.toString(),
+                            widget.usrData!.coverfilePicture.toString(),
+                            widget.usrData!.id.toString()
+                        );
+
+                        var body = jsonDecode(resp);
+                        if (body['message'] != ""){
+
+                          Navigator.pop(context);
+                        }
+                      }
+                    },
+                    child: const Text('Confirm'))
               ],
             ),
-          )
-      ),
+          )),
     );
   }
 }
