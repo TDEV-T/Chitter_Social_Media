@@ -272,7 +272,9 @@ class RestAPI {
             "follower": uid,
           });
         case "submit":
-          resp = await _dioWithAuth.post("follow/accept/$uid");
+          resp = await _dioWithAuth.post("follow/accept/$uid",data: {
+          "following":uid,
+          });
 
         default:
           resp = await _dioWithAuth.post("follow/req", data: {

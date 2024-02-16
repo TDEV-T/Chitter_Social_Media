@@ -3,6 +3,8 @@ import 'package:chitter/components/feeds/card_feeds.dart';
 import 'package:chitter/controller/UserController.dart';
 import 'package:chitter/models/PostModel.dart';
 import 'package:chitter/models/UserModel.dart';
+import 'package:chitter/screens/chat/chat_screen.dart';
+import 'package:chitter/screens/drawerpage/message/message_Screen.dart';
 import 'package:chitter/services/rest_api.dart';
 import 'package:chitter/utils/constants.dart';
 import 'package:chitter/utils/utils.dart';
@@ -100,7 +102,7 @@ class _profile_ScreenState extends State<profile_Screen_View> {
                               ),
                             ],
                           ),
-                          _buildFollowButton(
+                          _buildFollowButton(context,
                               user.statusfollower ?? "none", widget.uid),
                           (privateStatus &&
                                       (user.statusfollower == "active_send" ||
@@ -118,8 +120,8 @@ class _profile_ScreenState extends State<profile_Screen_View> {
                                   },
                                 )
                               : Container(
-                                  child: Center(
-                                    child: const Text("Account Is Private"),
+                                  child: const Center(
+                                    child:  Text("Account Is Private"),
                                   ),
                                 )
                         ],
@@ -137,7 +139,7 @@ class _profile_ScreenState extends State<profile_Screen_View> {
   }
 }
 
-Widget _buildFollowButton(String statusfollower, int uid) {
+Widget _buildFollowButton(BuildContext context , String statusfollower, int uid) {
   if (statusfollower != "myself") {
     if (statusfollower == "none") {
       return ElevatedButton(
@@ -160,21 +162,34 @@ Widget _buildFollowButton(String statusfollower, int uid) {
         child: const Text('Cancel Request'),
       );
     } else if (statusfollower == "active_send") {
-      return ElevatedButton(
-        onPressed: () async {
-          var resp = await RestAPI().sendFollowRequest(uid, "unfol");
-          if (resp) {
-            refreshKey.currentState!.show();
-          }
-        },
-        child: const Text('Unfollow'),
+     return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(
+                      builder: (context) => chat_Screen(rcid: uid)));
+            },
+            child: const Text('Message'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              var resp = await RestAPI().sendFollowRequest(uid, "unfol");
+              if (resp) {
+                refreshKey.currentState!.show();
+              }
+            },
+            child: const Text('Block'),
+          ),
+        ],
       );
     } else if (statusfollower == "pending_recei") {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
-            onPressed: () async  {
+            onPressed: () async {
               var resp = await RestAPI().sendFollowRequest(uid, "submit");
               if (resp) {
                 refreshKey.currentState!.show();
@@ -194,9 +209,27 @@ Widget _buildFollowButton(String statusfollower, int uid) {
         ],
       );
     } else if (statusfollower == "active_recei") {
-      return ElevatedButton(
-        onPressed: () {},
-        child: const Text('Block'),
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(
+                      builder: (context) => chat_Screen(rcid: uid)));
+            },
+            child: const Text('Message'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              var resp = await RestAPI().sendFollowRequest(uid, "unfol");
+              if (resp) {
+                refreshKey.currentState!.show();
+              }
+            },
+            child: const Text('Block'),
+          ),
+        ],
       );
     }
   }

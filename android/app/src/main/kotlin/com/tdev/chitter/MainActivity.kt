@@ -1,4 +1,4 @@
-package com.example.chitter
+package com.tdev.chitter
 
 import io.flutter.embedding.android.FlutterActivity
 
